@@ -1,0 +1,39 @@
+body{
+    margin: 0;
+    padding: 0;
+}
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    align-items: center;
+    background-color: #FBF5DD;
+}
+.logo img{
+ max-width: 80px;
+}
+.collegamenti{
+    display: flex;
+    gap: 32px; 
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.collegamenti a{
+    text-decoration: none;
+    color: #0D530E; 
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    display: inline-block;
+    transition: transform 0.2s ;
+}
+.collegamenti a:hover, .iconaLogin:hover{
+    color: #306d29;
+    transform: scale(1.1); /*non modifica lo spazio reale che occupa il link*/
+}
+.link_attuale{
+    border-bottom: 2px solid #0D530E;
+}
+#login_selected{
+    border-bottom: 2px solid #000000;
+}
