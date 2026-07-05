@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sigmar+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sigmar+One&display=swap');
 body{
     margin: 0;
     padding: 0;
+    font-family: 'Inter', sans-serif;
 }
 .navbar{
     display: flex;
@@ -22,7 +25,6 @@ body{
 .collegamenti a{
     text-decoration: none;
     color: #0D530E; 
-    font-family: 'Lato', sans-serif;
     font-weight: bold;
     display: inline-block;
     transition: transform 0.2s ;
@@ -36,4 +38,91 @@ body{
 }
 #login_selected{
     border-bottom: 2px solid #000000;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 20px 40px; 
+    background-color: #FBF5DD; 
+    font-family: 'Lato', sans-serif;
+    color: #0D530E;
+    position: fixed;
+    bottom: 0; 
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer p {
+    margin: 4px 0; 
+    font-size: 0.8em;
+}
+.footer_parte_destra {
+    flex: 1;
+    text-align: right;
+}
+.footer_parte_sinistra{
+    flex: 1;
+}
+
+p.titolo_footer{
+    font-size: 1.1em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+}
+.footer_parte_centrale {
+    display: flex;
+    gap: 20px;
+}
+.footer_parte_centrale img {
+    max-width: 35px;
+    transition: transform 0.2s;
+}
+.footer_parte_centrale img:hover {
+    transform: scale(1.1);
+}
+.menu_hamburger {
+    display: none; 
+    width: 35px; 
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    
+    .navbar {
+        padding: 15px 20px; 
+    }
+
+    .collegamenti, .iconaLogin {
+        display: none; 
+    }
+
+    .menu_hamburger {
+        display: block; 
+    }
+    .footer_parte_destra {
+        display: none; 
+    }
+    
+    .footer_parte_sinistra p:not(.titolo_footer) {/* Nasconde l'indirizzo, ma lascia visibile il titolo! */
+        display: none; 
+    }
+
+    .footer {
+        flex-direction: row; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 15px 20px; 
+    }
+
+    
+    .footer_parte_centrale {
+        display: flex;
+        flex-direction: row;
+        gap: 15px; 
+    }
+
+    .footer_parte_centrale img {
+        max-width: 26px; 
+    }
 }
