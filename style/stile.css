@@ -87,19 +87,44 @@ p.titolo_footer{
     width: 35px; 
     cursor: pointer;
 }
+.icone_destra {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 @media (max-width: 768px) {
     
     .navbar {
         padding: 15px 20px; 
-    }
-
-    .collegamenti, .iconaLogin {
-        display: none; 
+        position: relative; /*per aprire il meno laterale*/
     }
 
     .menu_hamburger {
         display: block; 
     }
+    .collegamenti{
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-15px);
+        flex-direction: column;
+        position: absolute;
+        top:100%;
+        left: 0;
+        width:100%;
+        background-color: #FBF5DD;
+        gap: 15px;
+        text-align: center;
+        transition: opacity 0.3s;
+    }
+    .collegamenti.attivo{
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        padding: 10px 0;
+    }
+
     .footer_parte_destra {
         display: none; 
     }
