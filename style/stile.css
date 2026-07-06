@@ -11,6 +11,8 @@ body{
     padding: 20px 40px;
     align-items: center;
     background-color: #FBF5DD;
+    position: sticky;
+    top:0
 }
 .logo img{
  max-width: 80px;
@@ -48,8 +50,7 @@ body{
     background-color: #FBF5DD; 
     font-family: 'Lato', sans-serif;
     color: #0D530E;
-    position: fixed;
-    bottom: 0; 
+    
     width: 100%;
     box-sizing: border-box;
 }
@@ -150,4 +151,230 @@ p.titolo_footer{
     .footer_parte_centrale img {
         max-width: 26px; 
     }
+}
+#hero{
+    background-image: url(../img/entrata.png);
+    background-size: cover;
+    background-position: center 65%;
+    background-repeat: no-repeat;
+    min-height: 550px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#contenuto_hero{
+    background-color: rgba(244, 241, 222, 0.51); 
+    padding: 40px 60px;
+    border-radius: 10px;
+}
+#contenuto_hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    font-size: 3.5em; 
+    margin: 0 0 10px 0;
+}
+
+#contenuto_hero h2 {
+    font-size: 1em;
+    color: #0D530E;
+    margin: 0 0 35px 0; 
+}
+#bottone_catalogo {
+    display: inline-block;
+    padding: 12px 35px;
+    border: 2px solid #0D530E;
+    border-radius: 50px; 
+    text-decoration: none;
+    color: #0D530E;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#bottone_catalogo:hover {
+    background-color: #0D530E; 
+    color: #FBF5DD;
+}
+@media (max-width: 768px) {
+    #contenuto_hero{
+        background-color: rgba(244, 241, 222, 0.51); 
+        padding: 40px 20px;
+    }
+    #contenuto_hero h1 {
+        font-family: 'Montserrat', sans-serif;
+        color: #0D530E;
+        font-size:2em;
+        margin: 0 0 10px 0
+    }
+    #contenuto_hero h2{
+        font-size: 0.8em;
+    }
+}
+#sezione_evidenza{
+    padding: 60px 40px;
+    text-align: center;
+}
+#sezione_evidenza h2{
+    font-family: 'Montserrat',sans-serif;
+    color: #0D530E;
+    margin-bottom: 30px;
+}
+#griglia_evidenza {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin: 0 auto;
+}
+.card_pianta {
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: left;
+    margin: 20px 0;
+}
+.img_pianta {
+    height: 200px;
+    width: 100%;
+    border-bottom: 2px solid #306D29;
+    position: relative; 
+    overflow: hidden;
+}
+.img_pianta img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.info_pianta {
+    padding: 15px 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: column; 
+    gap: 5px; 
+}
+.nome_pianta {
+    font-weight: bold;
+    color: #0D530E;
+    font-size: 1.1em;
+    margin: 0;
+}
+.prezzo_pianta {
+    color: #306D29;
+    margin: 0;
+    font-weight: bold;
+}
+@media (max-width: 768px) {
+    #griglia_evidenza {
+        grid-template-columns: 1fr;
+    }
+}
+
+.overlay-text{
+    position: absolute;
+    background-color: rgba(244, 241, 222, 0.51);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.5s;
+    align-items: center;
+}
+.img_pianta:hover .overlay-text{
+    top: 0;
+}
+.overlay-text q {
+    margin: 1em;
+    text-align: center;
+    font-weight: 400;
+}
+.overlay-text a{
+    background-color: #FBF5DD;
+    color: #0D530E;
+    padding:8px 24px;
+    text-decoration: none;
+    font-weight: bold;
+    border: 2px solid #FBF5DD;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 50px;
+}
+
+#sezione_viaggio {
+    padding: 60px 40px; 
+    background-color: #FBF5DD; 
+}
+
+#sezione_viaggio h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    margin-bottom: 40px;
+}
+
+.contenitore_viaggio {
+    display: flex;
+    flex-direction: column;
+    gap: 32px; 
+}
+
+.viaggio_item {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Due colonne identiche */
+    gap: 24px;
+}
+
+.viaggio_testo {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.viaggio_testo h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    border-bottom: 1px solid #306D29;
+    padding-bottom: 10px;
+}
+
+.viaggio_testo p {
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.viaggio_img {
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    overflow: hidden;
+    min-height: 300px;
+}
+
+.viaggio_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+@media (max-width: 768px) {
+    #sezione_viaggio { 
+        padding: 60px 20px; 
+    }
+    
+    .viaggio_item { 
+        grid-template-columns: 1fr;
+        gap: 16px; 
+    }
+    
+    .viaggio_img { 
+        min-height: 250px; 
+    }
+    .viaggio_testo { order: 1; } 
+    .viaggio_img { order: 2; } 
 }
