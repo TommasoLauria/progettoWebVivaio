@@ -12,7 +12,8 @@ body{
     align-items: center;
     background-color: #FBF5DD;
     position: sticky;
-    top:0
+    top:0;
+    z-index:1000;
 }
 .logo img{
  max-width: 80px;
@@ -298,10 +299,10 @@ p.titolo_footer{
     transition: 0.3s;
     border-radius: 50px;
 }
-
+/*sezione viaggio index*/
 #sezione_viaggio {
     padding: 60px 40px; 
-    background-color: #FBF5DD; 
+    background-color: #e7e1b1; 
 }
 
 #sezione_viaggio h2 {
@@ -310,7 +311,7 @@ p.titolo_footer{
     margin-bottom: 40px;
 }
 
-.contenitore_viaggio {
+#contenitore_viaggio {
     display: flex;
     flex-direction: column;
     gap: 32px; 
@@ -318,7 +319,7 @@ p.titolo_footer{
 
 .viaggio_item {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Due colonne identiche */
+    grid-template-columns: repeat(2, 1fr); 
     gap: 24px;
 }
 
@@ -329,14 +330,13 @@ p.titolo_footer{
     justify-content: center;
     border: 2px solid #306D29;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: #ffffff;
 }
 
 .viaggio_testo h3 {
     font-family: 'Montserrat', sans-serif;
     color: #0D530E;
     margin-top: 0;
-    margin-bottom: 15px;
     font-size: 1.3em;
     border-bottom: 1px solid #306D29;
     padding-bottom: 10px;
@@ -352,7 +352,7 @@ p.titolo_footer{
     border: 2px solid #306D29;
     border-radius: 10px;
     overflow: hidden;
-    min-height: 300px;
+    height: 400px;
 }
 
 .viaggio_img img {
@@ -377,4 +377,263 @@ p.titolo_footer{
     }
     .viaggio_testo { order: 1; } 
     .viaggio_img { order: 2; } 
+}
+
+.header_pagina {
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+}
+
+.header_pagina h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    font-size: 2.8em;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+}
+
+.header_pagina h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2em;
+    color: #306D29;
+    margin: 0;
+    font-weight: 500;
+}
+
+#sezione_storia {
+    padding: 40px;
+}
+
+.storia_contenitore {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+.storia_img {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #e7e1b1;
+    text-align: center;
+}
+
+.storia_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    min-height: 300px;
+    display: block;
+}
+
+.storia_testo {
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    padding: 30px;
+    background-color: #ffffff;
+}
+
+.storia_testo p {
+    color: #000000;
+    line-height: 1.5;
+    font-size: 1.1em;
+}
+
+#sezione_galleria_chisiamo {
+    padding: 40px;
+}
+
+#sezione_galleria_chisiamo h2 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    margin-bottom: 30px;
+}
+
+.galleria_layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.galleria_colonna_sinistra {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.galleria_colonna_destra {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.galleria_item {
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #e7e1b1; 
+}
+
+.galleria_item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.galleria_item:hover img {
+    transform: scale(1.05);
+}
+
+/* Colonna sinistra: (310px * 2) + 20px gap = 640px totali */
+.galleria_item {
+    height: 310px; 
+}
+
+/* Colonna destra: 3 righe da 200px + (20px gap * 2) = 640px totali */
+.galleria_colonna_destra .galleria_item { /*tutti galleria item che si trovano dentro galleria colonna destra*/
+    height: 200px; 
+}
+
+.galleria_colonna_destra .galleria_item:nth-child(3) {
+    grid-column: span 2; 
+}
+
+@media (max-width: 768px) {
+    .header_pagina h1 {
+        font-size: 2em;
+    }
+    
+    #sezione_storia, #sezione_galleria_chisiamo {
+        padding: 20px;
+    }
+
+    .storia_contenitore {
+        grid-template-columns: 1fr;
+    }
+    .storia_img {
+        border: 2px solid #306D29;
+    }
+
+    .galleria_layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .galleria_colonna_sinistra .galleria_item {
+        height: 250px;
+    }
+
+    .galleria_colonna_destra .galleria_item {
+        height: 150px;
+    }
+
+    .galleria_colonna_destra .galleria_item:nth-child(3) {
+        grid-column: span 2;
+        height: 200px;
+    }
+}
+
+/*pagina contatti*/
+
+#sezione_contatti {
+    padding: 40px;
+}
+
+.contatti_layout {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.contatti_form h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: #0D530E;
+    font-size: 1.5em;
+}
+
+.contatti_form label {
+    display: block;
+    font-weight: bold;
+    color: #0D530E;
+    margin-bottom: 8px;
+}
+
+.contatti_form input,
+.contatti_form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 2px solid #306D29; 
+    border-radius: 10px; 
+    box-sizing: border-box; 
+    font-family: 'Inter', sans-serif;
+    font-size: 1em;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.btn_invia {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    padding: 12px 25px;
+    background-color: transparent;
+    border: 2px solid #0D530E;
+    border-radius: 50px;
+    color: #0D530E;
+    font-weight: bold;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0 auto;
+}
+
+.btn_invia:hover {
+    background-color: #0D530E;
+    color: #FBF5DD;
+}
+
+.mappa_container {
+    width: 100%;
+    height: 350px;
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.mappa_container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+.dettagli_contatto p {
+    color: #000000;
+    font-size: 1.1em;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.dettagli_contatto strong {
+    color: #0D530E;
+}
+
+@media (max-width: 768px) {
+    #sezione_contatti {
+        padding: 20px;
+    }
+    .contatti_layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .mappa_container {
+        height: 250px; 
+    }
+    .dettagli_contatto {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
 }
