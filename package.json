@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,10 @@
   "homepage": "https://github.com/TommasoLauria/progettoWebVivaio#readme",
   "description": "",
   "dependencies": {
-    "cookie-parser": "^1.4.7"
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }
