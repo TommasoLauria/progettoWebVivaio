@@ -9,22 +9,42 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="/public/index.html" class="logo">
+        <a href="/index.html" class="logo">
             <img src="/img/logovivaio.png" alt="Logo Vivai Carm Giardini">
         </a>
         <ul class="collegamenti">
-            <li><a href="/public/index.html">Home</a></li>
-            <li><a href="/public/chiSiamo.html">Chi siamo</a></li>
-            <li><a href="/public/catalogo.html">Catalogo</a></li>
-            <li><a href="/public/contatti.html">Contatti</a></li>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/chiSiamo.html">Chi siamo</a></li>
+            <li><a href="/catalogo.html">Catalogo</a></li>
+            <li><a href="/contatti.html">Contatti</a></li>
         </ul>
         <div class="icone_destra">
-            <a href="/public/login.html" class="iconaLogin" id="login_selected">
+            <a href="/login.html" class="iconaLogin" id="login_selected">
                 <img src="/img/utente.png" alt="iconaLogin">
             </a>
             <img src="/img/hamburger.png" alt="Menu" class="menu_hamburger">
         </div>
     </nav>
+    <div id="sezione_login">
+        <div class="contenitore_login">
+            <h2>Login Staff</h2>
+            <p class="sottotitolo_login">Vivai Carm Giardini</p>
+            
+            <form action="/login" method="POST" class="form_login">
+                <div class="gruppo_input">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="gruppo_input">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn_accedi">Accedi</button>
+            </form>
+        </div>
+    </div>
     <footer class="footer">
         <div class="footer_parte_sinistra">
             <p class="titolo_footer">Vivai Carm Giardini</p>

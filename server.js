@@ -1,9 +1,23 @@
 const express = require("express");
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
 const app = express();
 const port = 3000;
+app.use((req, res, next) => {
+    console.log(`[LOG] Ricevuta richiesta: ${req.method} ${req.url}`);
+    next(); // Continua verso le rotte successive
+});
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+
 app.use(express.static("public"));
+
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/public/login.html');
+});
+
+
 const catalogoPiante = [
     {
         id: 1,
@@ -32,13 +46,46 @@ const catalogoPiante = [
         immagine: "/img/piante/Primula vulgaris.png",
         disponibilita: "Disponibile",
         categoria: "alberi",
-        descrizione: "Il limone (Citrus limon) è un albero da frutto appartenente alla famiglia delle Rutaceae.",
-        link: "https://it.wikipedia.org/wiki/Citrus_%C3%97_limon"
+        descrizione: "La primula è un genere di piante appartenente alla famiglia delle Primulaceae.",
+        link: "https://it.wikipedia.org/wiki/Primula"
     }
 ];
-app.get('/api/piante',(req,res)=>{
+
+// 5. API CATALOGO
+app.get('/api/piante', (req, res) => {
     res.json(catalogoPiante);
 });
+
+// 6. ROTTA GESTIONE LOGIN (POST) - QUESTA È QUELLA CHE CHIAMI DAL FORM
+app.post('/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    
+    console.log("Tentativo di login con:", username, password);
+    
+    if (username === 'admin' && password === 'admin') {
+        res.cookie('staff_auth', 'true', { maxAge: 3600000, httpOnly: true });
+        res.send('Login effettuato con successo! <a href="/area-riservata">Vai all\'area riservata</a>');
+    } else {
+        res.status(401).send('Credenziali non valide. <a href="/login.html">Riprova</a>');
+    }
+});
+
+
+app.get('/area-riservata', (req, res) => {
+    if (req.cookies.staff_auth === 'true') {
+        res.send('<h1>Benvenuto Staff!</h1><p>Cookie riconosciuto.</p><a href="/logout">Logout</a>');
+    } else {
+        res.status(403).send('Accesso negato.');
+    }
+});
+
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('staff_auth');
+    res.send('Logout effettuato. <a href="/login.html">Torna al login</a>');
+});
+
 app.listen(port, () => {
     console.log("Server attivo su http://localhost:" + port);
 });

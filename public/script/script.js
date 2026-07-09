@@ -1,6 +1,6 @@
 window.onload=function(){
     const hamburger = document.getElementsByClassName("menu_hamburger")[0]; //dato che restituisce una lista di elementi 'HTMLCollection' prendo il primo elemento 
-    const links = document.getElementsByClassName("collegamenti")[0];
+    const links = document.getElementsByClassName("collegamenti")[0]; 
     hamburger.addEventListener('click',()=> {
         if(links.classList.contains('attivo')){
             links.classList.remove('attivo');
@@ -65,11 +65,11 @@ function mostraPiante(piante) {
         const qDescrizione = document.createElement("q");
         qDescrizione.textContent = pianta.descrizione;
         const aLink = document.createElement("a");
-        aLink.href = pianta.link; // Prende il dato dal server.js
+        aLink.href = pianta.link; 
         aLink.textContent = "Scopri";
         divOverlay.appendChild(qDescrizione);
         divOverlay.appendChild(aLink);
-        divImgPianta.appendChild(divOverlay);
+        
 
         const divInfoPianta = document.createElement("div");
         divInfoPianta.classList.add("info_pianta");
