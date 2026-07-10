@@ -22,6 +22,10 @@ window.onload=function(){
             tendinaCategoria.addEventListener("change", filtraPiante); 
         }
     }
+
+    if (document.getElementById("gestione")) {
+        inizializzaDashboard();
+    }
 };
 
 let piante = [];

@@ -123,6 +123,7 @@ p.titolo_footer{
         text-align: center;
         transition: opacity 0.3s;
     }
+
     .collegamenti.attivo{
         display: flex;
         opacity: 1;
@@ -829,4 +830,306 @@ p.titolo_footer{
 .btn_accedi:hover {
     background-color: #306D29;
     color: #ffffff;
+}
+/*pagina dashboard*/
+#gestione_piante{
+    width: 90%;
+    margin: 0 auto;
+}
+#gestione_piante h2{
+    font-family: 'Montserrat',sans-serif;
+    font-size: 2.8em;
+    text-align: center;
+    color: #0D530E;
+}
+
+.header, .riga {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1.5fr 1fr 1fr;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.header {
+
+    border-radius: 8px 8px 0 0;
+    font-weight: bold;
+    background-color: #306d29;
+    color: #ffffff;
+}
+
+#corpo {
+    border: 2px solid #306D29;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+}
+
+.riga {
+    border-bottom: 1px solid #306D29;
+}
+
+.riga:last-child {
+    border-bottom: none;
+}
+.mobile_card {
+    display: none;
+}
+
+/* Layout Desktop */
+.desktop_pianta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.img_desktop {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.codici, .azioni {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    #gestione_piante h2 { 
+        font-size: 2em; 
+    }
+    .header { 
+        display: none ; 
+    }
+    #corpo { 
+        border: none ; 
+    }
+    .desktop_pianta { 
+        display: none ; 
+    }
+    .desktop_categoria { 
+        display: none; 
+    }
+    .desktop_quantita { 
+        display: none; 
+    }
+    .desktop_concime { 
+        display: none; 
+    }
+    
+    /* LA RIGA DIVENTA LA TUA CARD */
+    .riga {
+        display: flex;
+        flex-wrap: wrap;
+        border: 2px solid #306D29 ; 
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #fff;
+    }
+
+    /* ACCENDI IL BLOCCO MOBILE */
+    .mobile_card {
+        display: flex;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .img_mobile {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 6px;
+    }
+
+    .mobile_dati {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .mobile_riga_dato {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .mobile_riga_dato span {
+        font-size: 0.9em;
+        color: #000000;
+        min-width: 65px;
+    }
+
+    .box_input {
+        border: 1px solid #000;
+        padding: 6px 8px;
+        width: 100%;
+        font-size: 0.85em;
+        border-radius: 4px;
+        color: #000000;
+    }
+
+    /* ICONE IN BASSO */
+    .codici {
+        width: 50%;
+        margin-top: 25px;
+        gap: 20px;
+    }
+    
+    .azioni {
+        width: 50%;
+        margin-top: 25px;
+        justify-content: flex-end;
+    }
+}
+
+
+
+.bottone_icona{ 
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.icona_azione{
+    width: 26px;
+    height: 26px;
+    transition: transform 0.2s;
+}
+.icona_azione:hover { 
+    transform: scale(1.15);
+}
+
+#bottone_aggiungi{
+    position: fixed;
+    bottom: 15px ;
+    right: 30px;
+    background-color: #306D29;
+    border: 2px solid #0D530E;
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 99; 
+}
+#bottone_aggiungi img{
+    width: 30px;
+    height: 30px;
+}
+#bottone_aggiungi:hover{ 
+    transform: scale(1.1);
+}
+
+.overlay_popup{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000; 
+}
+.overlay_popup.attivo{ 
+    display: flex;
+}
+
+.contenuto_popup{
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 60%;
+    margin: auto;
+}
+.contenuto_popup h3{
+    color: #306D29;
+    border-bottom: 2px solid #0000005e;
+    padding-bottom: 10px;
+}
+
+.gruppo_input{
+    margin-bottom: 15px;
+}
+.gruppo_input label{ 
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #000000;
+    font-size: 0.9em;
+}
+.gruppo_input input, .gruppo_input select { 
+    padding: 10px;
+    border: 1px solid #0000005e;
+    border-radius: 6px;
+}
+.doppia_colonna {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+}
+
+.azioni_popup { 
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+.azioni_popup button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em; 
+}
+#salva_pianta, #bottone_stampa_codice {
+    background-color: #306D29;
+    color: #ffffff; 
+}
+.btn_chiudi_popup { 
+    background-color: #e0e0e0; 
+    color: #0000005e; 
+}
+
+#anteprima_codice { 
+    display: flex; 
+    justify-content: center; 
+    margin: 25px 0; 
+}
+#url_codice { 
+    text-align: center; 
+    font-size: 0.85em; 
+    margin-bottom: 20px; 
+}
+.testo_rosso {
+    color: #ff0000 ;
+    font-weight: bold;
+}
+
+@media print {
+    body * { 
+        visibility: hidden; 
+    }
+    #popup_codice, #popup_codice * { 
+        visibility: visible; 
+    }
+    #popup_codice { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        background: none; 
+        display: block; 
+    }
+    .azioni_popup { 
+        display: none;
+    }
+    .contenuto_popup { 
+        box-shadow: none; 
+        border: none; 
+        padding: 0; 
+        margin: 0; 
+    }
 }

@@ -1,7 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.use((req, res, next) => {
     console.log(`[LOG] Ricevuta richiesta: ${req.method} ${req.url}`);
     next(); // Continua verso le rotte successive
@@ -51,12 +51,25 @@ const catalogoPiante = [
     }
 ];
 
-// 5. API CATALOGO
+
 app.get('/api/piante', (req, res) => {
     res.json(catalogoPiante);
 });
+app.post('/api/piante', (req, res) => {
+    const piantaRicevuta = req.body;
+    
+    // Cerca se esiste già
+    const index = catalogoPiante.findIndex(p => p.id === piantaRicevuta.id);
+    
+    if (index !== -1) {
+        catalogoPiante[index] = piantaRicevuta; 
+    } else {
+        catalogoPiante.push(piantaRicevuta);
+    }
+    
+    res.json({ success: true, messaggio: "Pianta salvata sul server!" });
+});
 
-// 6. ROTTA GESTIONE LOGIN (POST) - QUESTA È QUELLA CHE CHIAMI DAL FORM
 app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -65,18 +78,26 @@ app.post('/login', (req, res) => {
     
     if (username === 'admin' && password === 'admin') {
         res.cookie('staff_auth', 'true', { maxAge: 3600000, httpOnly: true });
-        res.send('Login effettuato con successo! <a href="/area-riservata">Vai all\'area riservata</a>');
+        res.redirect(302,'/dashboard');
     } else {
-        res.status(401).send('Credenziali non valide. <a href="/login.html">Riprova</a>');
+        res.redirect(302,'/login?error=credenziali_errate');
     }
 });
 
 
-app.get('/area-riservata', (req, res) => {
+app.get('/dashboard', (req, res) => {
     if (req.cookies.staff_auth === 'true') {
-        res.send('<h1>Benvenuto Staff!</h1><p>Cookie riconosciuto.</p><a href="/logout">Logout</a>');
+        res.sendFile(__dirname + '/private/dashboard.html');
     } else {
-        res.status(403).send('Accesso negato.');
+        res.redirect(302,'/login');
+    }
+});
+
+app.get('/gestione-pianta', (req, res) => {
+    if (req.cookies.staff_auth === 'true') {
+        res.sendFile(__dirname + '/private/gestionePianta.html');
+    } else {
+        res.redirect(302,'/login');
     }
 });
 
