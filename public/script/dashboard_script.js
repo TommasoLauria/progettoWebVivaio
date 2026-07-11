@@ -5,6 +5,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     eventiFissi();
     await caricaDatiPiante();
     renderizzaTabella();
+    const bloccoLogin = document.getElementById("blocco_login_nav");
+    const linkIcona = document.getElementById("link_icona_login");
+
+    if (bloccoLogin && linkIcona) {
+        // Controlla se nei cookie del browser è presente 'staff_auth=true'
+        if (document.cookie.includes("staff_auth=true")) {
+            // Sei loggato! Aggiunge la classe che permette l'hover e cambia il link in /dashboard
+            bloccoLogin.classList.add("loggato");
+            linkIcona.href = "/dashboard";
+        } else {
+            // Non sei loggato: si assicura che non ci sia la classe
+            bloccoLogin.classList.remove("loggato");
+            linkIcona.href = "/login";
+        }
+    }
 });
 
 function eventiFissi() {
@@ -18,6 +33,23 @@ function eventiFissi() {
             chiudiPopup(popup);
         });
     });
+    const btnLogout = document.getElementById("logout");
+    const popupLogout = document.getElementById("popup_logout");
+    const btnConfermaLogout = document.getElementById("conferma_logout");
+    const btnAnnullaLogout = document.getElementById("annulla_logout");
+
+    if (btnLogout && popupLogout) {
+        btnLogout.addEventListener("click", (event) => {
+            event.preventDefault(); 
+            popupLogout.classList.add("attivo");
+        });
+        btnConfermaLogout.addEventListener("click", () => {
+            window.location.href = "/logout"; 
+        });
+        btnAnnullaLogout.addEventListener("click", () => {
+            chiudiPopup(popupLogout);
+        });
+    }
 }
 
 async function caricaDatiPiante() {
@@ -186,7 +218,7 @@ function apriPopupCodice(pianta, tipo) {
     const urlTesto = document.getElementById("url_codice");
     const titolo = document.getElementById("titolo_popup_codice");
 
-    const urlCompleto = `${window.location.origin}/gestione-pianta?id=${pianta.id}`;
+    const urlCompleto = `${window.location.origin}/anteprima-pianta?id=${pianta.id}`;
     
     anteprima.innerHTML = "";
     urlTesto.textContent = urlCompleto;

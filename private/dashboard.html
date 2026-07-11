@@ -9,7 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     
-    <script src="/script/dashboard_script.js" defer></script>
+    <script src="/script/dashboard_script.js" ></script>
 </head>
 <body>
     <nav class="navbar">
@@ -23,10 +23,19 @@
             <li><a href="/contatti.html">Contatti</a></li>
         </ul>
         <div class="icone_destra">
-            <a href="/login.html" class="iconaLogin" id="login_selected">
-                <img src="/img/utente.png" alt="iconaLogin">
-            </a>
-            <img src="/img/hamburger.png" alt="Menu" class="menu_hamburger">
+            
+            <div class="contenitore_dropdown_login" id="blocco_login_nav">
+                <div class="iconaLogin" id="link_icona_login">
+                    <img src="./img/utente.png" alt="iconaLogin">
+                </div>
+                
+                <div class="menu_tendina_login" id="menu_staff_nav">
+                    <a href="/dashboard" class="identifica_pagina_privata">Dashboard</a>
+                    <a href="/gestione-pianta">Gestione Pianta</a>
+                    <a href="/logout" id="logout">Esci</a>
+                </div>
+
+            <img src="./img/hamburger.png" alt="Menu" class="menu_hamburger">
         </div>
     </nav>
     <section id="gestione_piante">
@@ -114,6 +123,17 @@
             <div class="azioni_popup">
                 <button type="button" id="bottone_stampa_codice">Stampa</button>
                 <button type="button" class="btn_chiudi_popup">Chiudi</button>
+            </div>
+        </div>
+    </div>
+    <div id="popup_logout" class="overlay_popup">
+        <div class="contenuto_popup" >
+            <h3>Conferma Uscita</h3>
+            <p>Sei sicuro di voler uscire dalla dashboard?</p>
+            
+            <div class="azioni_popup">
+                <button type="button" class="btn_chiudi_popup" id="annulla_logout">Annulla</button>
+                <button type="button" class="btn_elimina_pianta" id="conferma_logout">Sì, Esci</button>
             </div>
         </div>
     </div>

@@ -40,7 +40,7 @@ body{
     transform: scale(1.1); /*non modifica lo spazio reale che occupa il link*/
 }
 .link_attuale{
-    border-bottom: 2px solid #0D530E;
+    border-bottom: px solid #0D530E;
 }
 #login_selected{
     border-bottom: 2px solid #000000;
@@ -949,13 +949,13 @@ p.titolo_footer{
         gap: 10px;
     }
 
-    .mobile_riga_dato {
+    .riga_anteprima {
         display: flex;
         align-items: center;
         gap: 10px;
     }
 
-    .mobile_riga_dato span {
+    .riga_anteprima span {
         font-size: 0.9em;
         color: #000000;
         min-width: 65px;
@@ -1133,3 +1133,156 @@ p.titolo_footer{
         margin: 0; 
     }
 }
+
+
+.corpo_anteprima {
+    display: flex;
+    gap: 40px;
+    width: 80%;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.anteprima_immagine {
+    width: 50%;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.anteprima_immagine img {
+    width: 100%;
+    border-radius: 10px;
+}
+.anteprima_dati {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#pianta_nome {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.8em;
+    margin: 0;
+    color: #0D530E;
+}
+
+.gruppo_visualizzazione label {
+    font-weight: bold;
+    font-size: 1em;
+    color: #306D29;
+}
+.area_descrizione label{
+    font-size: 1.5em;
+}
+#pianta_descrizione {
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    padding: 15px;
+    min-height: 120px;
+    line-height: 1.5;
+}
+.area_prezzo {
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%;
+}
+
+.area_prezzo label {
+    text-transform: uppercase;
+}
+
+.area_prezzo span {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+.blocco_staff  {
+    border: none;
+    border-top: 1px solid #0000005e;
+    margin-bottom: 10px;
+    margin-top: 15px;
+}
+
+.blocco_staff p {
+    font-size: 1em;
+}
+
+.blocco_staff a {
+    color: #306D29;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .corpo_anteprima {
+        flex-direction: column;
+        gap: 25px;
+    }
+    .anteprima_dati,.anteprima_immagine{
+        width: 100%;
+    }
+    
+    .area_prezzo {
+        max-width: 100%; 
+    }
+}
+
+.contenitore_dropdown_login {
+    position: relative; 
+    display: flex;
+    align-items: center;
+}
+
+.menu_tendina_login {
+    position: absolute;
+    top: 100%; 
+    right: 0; 
+    background-color: #FBF5DD; 
+    border: 2px solid #306D29;
+    border-radius: 10px;
+    display: none; 
+    flex-direction: column;
+    min-width: 170px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    overflow: hidden; 
+}
+.contenitore_dropdown_login.loggato .menu_tendina_login {
+    display: flex;
+}
+.contenitore_dropdown_login.loggato:hover .menu_tendina_login {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.menu_tendina_login a {
+    color: #0D530E;
+    padding: 12px 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.95em;
+    border-bottom: 1px solid #306D29;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.menu_tendina_login a:last-child {
+    border-bottom: none; 
+}
+
+
+.identifica_pagina_privata{
+    background-color: #306D29;
+    color: #FBF5DD !important;
+}
+

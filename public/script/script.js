@@ -26,6 +26,11 @@ window.onload=function(){
     if (document.getElementById("gestione")) {
         inizializzaDashboard();
     }
+    if (document.getElementById("pianta_nome")) {
+        const parametriUrl = new URLSearchParams(window.location.search);
+        const idPianta = parametriUrl.get("id");
+        caricaAnteprima(idPianta);
+    }
 };
 
 let piante = [];
@@ -123,5 +128,40 @@ function filtraPiante(){
         }
     }
     mostraPiante(pianteFiltrate);
+
+}
+async function caricaAnteprima(idPianta) {
+    if (!idPianta){
+        document.getElementById("pianta").textContent="pianta non specificata o non trovata";
+        return;
+    }
+    try{
+        const res = await fetch("/api/piante");
+        const piante = await res.json();
+        for(let i =0; i<piante.length; i++){
+            console.log(piante[i])
+        }
+        let piantaTrovata;
+        let cerca =false;
+        for(let i = 0; i< piante.length;i++){
+            if (Number(piante[i].id) === Number(idPianta)){
+                cerca = true;
+                piantaTrovata = piante[i];
+            }
+        }
+        if(cerca){
+            document.getElementById("pianta_img").src = piantaTrovata.immagine;
+            document.getElementById("pianta_nome").textContent=piantaTrovata.nome;
+            document.getElementById("pianta_descrizione").textContent=piantaTrovata.descrizione || "nessuna descrizione per questa pianta";
+            document.getElementById("pianta_prezzo").textContent= piantaTrovata.prezzo
+        }
+        else 
+        {
+            document.getElementById("pianta_nome").textContent="errore di caricamento";
+        }
+    }catch(e){
+        console.error(e);
+        document.getElementById("pianta_nome").textContent = "errore di caricamento pianta"
+    }
 
 }

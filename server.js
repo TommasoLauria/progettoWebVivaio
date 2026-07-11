@@ -68,7 +68,12 @@ function eliminaPianta(id) {
 }
 
 app.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/public/login.html');
+   
+    if (req.cookies.staff_auth === 'true') {
+        res.redirect(302, '/dashboard');
+    } else {
+        res.sendFile(__dirname + '/public/login.html');
+    }
 });
 
 
@@ -117,7 +122,7 @@ app.post('/login', (req, res) => {
     console.log("Tentativo di login con:", username, password);
     
     if (username === 'admin' && password === 'admin') {
-        res.cookie('staff_auth', 'true', { maxAge: 3600000, httpOnly: true });
+        res.cookie('staff_auth', 'true', { maxAge: 3600000,path: '/'});
         res.redirect(302,'/dashboard');
     } else {
         res.redirect(302,'/login?error=credenziali_errate');
@@ -140,12 +145,17 @@ app.get('/gestione-pianta', (req, res) => {
         res.redirect(302,'/login');
     }
 });
+app.get('/anteprima-pianta', (req, res) => {
+
+    res.sendFile(__dirname + '/public/anteprimaPianta.html');
+});
 
 
 app.get('/logout', (req, res) => {
-    res.clearCookie('staff_auth');
-    res.send('Logout effettuato. <a href="/login.html">Torna al login</a>');
+    res.clearCookie('staff_auth'); 
+    res.redirect(302, '/login');   
 });
+
 
 app.listen(port, () => {
     console.log("Server attivo su http://localhost:" + port);
