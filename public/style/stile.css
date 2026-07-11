@@ -917,8 +917,9 @@ p.titolo_footer{
     .desktop_concime { 
         display: none; 
     }
-    
-    /* LA RIGA DIVENTA LA TUA CARD */
+    .riga:last-child {
+        border-bottom: 1px solid #306D29;
+    }
     .riga {
         display: flex;
         flex-wrap: wrap;
@@ -928,8 +929,6 @@ p.titolo_footer{
         margin-bottom: 20px;
         background-color: #fff;
     }
-
-    /* ACCENDI IL BLOCCO MOBILE */
     .mobile_card {
         display: flex;
         width: 100%;
@@ -971,7 +970,6 @@ p.titolo_footer{
         color: #000000;
     }
 
-    /* ICONE IN BASSO */
     .codici {
         width: 50%;
         margin-top: 25px;
@@ -984,8 +982,6 @@ p.titolo_footer{
         justify-content: flex-end;
     }
 }
-
-
 
 .bottone_icona{ 
     background: none;
@@ -1004,7 +1000,7 @@ p.titolo_footer{
 
 #bottone_aggiungi{
     position: fixed;
-    bottom: 15px ;
+    bottom: 100px ;
     right: 30px;
     background-color: #306D29;
     border: 2px solid #0D530E;
@@ -1091,6 +1087,10 @@ p.titolo_footer{
 .btn_chiudi_popup { 
     background-color: #e0e0e0; 
     color: #0000005e; 
+}
+.btn_elimina_pianta{
+    background-color: #ff0000;
+    color: #ffffff;
 }
 
 #anteprima_codice { 

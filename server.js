@@ -1,5 +1,8 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const fs = require("fs");
+const path = require("path");
+const FILE_PATH = path.join(__dirname, "piante.json");
 const app = express();
 const port = process.env.PORT || 3000;
 app.use((req, res, next) => {
@@ -13,61 +16,98 @@ app.use(cookieParser());
 
 app.use(express.static("public"));
 
+
+function leggiPiante() {
+    try {
+        if (!fs.existsSync(FILE_PATH)) {
+            fs.writeFileSync(FILE_PATH, JSON.stringify([]), "utf-8");
+            return [];
+        }
+        const dati = fs.readFileSync(FILE_PATH, "utf-8");
+        return JSON.parse(dati);
+    } catch (error) {
+        console.error("Errore nella lettura del file:", error);
+        return [];
+    }
+}
+function aggiungiPianta(nuovaPianta) {
+    const piante = leggiPiante();
+    piante.push(nuovaPianta);
+    fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
+    return piante;
+}
+function modificaPianta(id, datiAggiornati) {
+    const piante = leggiPiante();
+    const index = piante.findIndex(p => Number(p.id) === Number(id));
+    
+    if (index !== -1) {
+        piante[index] = { ...datiAggiornati, id: Number(id) };
+        fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
+        return true;
+    }
+    return false;
+}
+function eliminaPianta(id) {
+    const piante = leggiPiante();
+    let nomeEliminato = "";
+    const vecchioLunghezza = piante.length;
+
+    for (let i = 0; i < piante.length; i++) {
+        if (Number(piante[i].id) === Number(id)) {
+            nomeEliminato = piante[i].nome;
+            piante.splice(i, 1);
+            break;
+        }
+    }
+
+    if (piante.length < vecchioLunghezza) {
+        fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
+        return nomeEliminato; 
+    }
+    return null; 
+}
+
 app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/public/login.html');
 });
 
 
-const catalogoPiante = [
-    {
-        id: 1,
-        nome: "Surfinia",
-        prezzo: "1,50 €",
-        immagine: "/img/piante/surfina.png",
-        disponibilita: "Disponibile",
-        categoria: "fiori",
-        descrizione: "La Surfinia, il cui nome scientifico è Petunia x hybrida, appartiene al genere Petunia e alla famiglia delle Solanaceae.",
-        link: "https://www.piante.it/surfinia/"
-    },
-    {
-        id: 2,
-        nome: "Rosa",
-        prezzo: "3,00 €",
-        immagine: "/img/piante/rosa.png",
-        disponibilita: "Pochi pezzi",
-        categoria: "fiori",
-        descrizione: "Amatissima e molto conosciuta per le sue innumerevoli varietà, la Rosa è un genere di arbusto appartenente alla famiglia delle Rosaceae.",
-        link: "https://www.piante.it/rosa/"
-    },
-    {
-        id: 3,
-        nome: "primula",
-        prezzo: "25,00 €",
-        immagine: "/img/piante/Primula vulgaris.png",
-        disponibilita: "Disponibile",
-        categoria: "alberi",
-        descrizione: "La primula è un genere di piante appartenente alla famiglia delle Primulaceae.",
-        link: "https://it.wikipedia.org/wiki/Primula"
-    }
-];
+
 
 
 app.get('/api/piante', (req, res) => {
-    res.json(catalogoPiante);
+    res.json(leggiPiante());
 });
 app.post('/api/piante', (req, res) => {
     const piantaRicevuta = req.body;
+    const pianteAttuali = leggiPiante();
     
-    // Cerca se esiste già
-    const index = catalogoPiante.findIndex(p => p.id === piantaRicevuta.id);
-    
-    if (index !== -1) {
-        catalogoPiante[index] = piantaRicevuta; 
-    } else {
-        catalogoPiante.push(piantaRicevuta);
+    let esiste = false; 
+
+    for (let i = 0; i < pianteAttuali.length; i++) {
+        if (Number(pianteAttuali[i].id) === Number(piantaRicevuta.id)) {
+            esiste = true; 
+            break;         
+        }
     }
     
-    res.json({ success: true, messaggio: "Pianta salvata sul server!" });
+    if (esiste) {
+        const successo = modificaPianta(piantaRicevuta.id, piantaRicevuta); 
+        res.json({ success: successo, messaggio: successo ? "Pianta modificata con successo!" : "Errore nella modifica." }); //
+    } else {
+        aggiungiPianta(piantaRicevuta); 
+        res.json({ success: true, messaggio: "Nuova pianta aggiunta con successo!" }); 
+    }
+});
+app.delete('/api/piante', (req, res) => {
+    const idDaEliminare = req.body.id;
+    const nomeCancellato = eliminaPianta(idDaEliminare);
+    
+    if (nomeCancellato !== null) {
+        res.json({ success: true, messaggio: "pianta eliminata dal db!", nome: nomeCancellato });
+    } else {
+        res.json({ success: false, messaggio: "Pianta non trovata o già eliminata.", nome: "" });
+    }
 });
 
 app.post('/login', (req, res) => {

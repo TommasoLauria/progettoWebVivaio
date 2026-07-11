@@ -1,3 +1,4 @@
+
 let pianteDashboard = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -10,7 +11,7 @@ function eventiFissi() {
     document.getElementById("bottone_aggiungi").addEventListener("click", () => apriPopupPianta());
     document.getElementById("form_pianta").addEventListener("submit", gestisciSalvataggioPianta);
     document.getElementById("bottone_stampa_codice").addEventListener("click", () => window.print());
-
+    document.getElementsByClassName("btn_elimina_pianta")[0].addEventListener("click",() =>eliminaPianta());
     document.querySelectorAll(".btn_chiudi_popup").forEach(bottone => {
         bottone.addEventListener("click", (evento) => {
             const popup = evento.target.closest(".overlay_popup");
@@ -110,6 +111,7 @@ function apriPopupPianta(pianta = null) { //valore di default per pianta in modo
     const titolo = document.getElementById("titolo_popup_pianta");
     
     if (pianta) {
+        (document.querySelector(".btn_elimina_pianta")).disabled = false
         titolo.textContent = "Modifica Pianta";
         document.getElementById("pianta_id").value = pianta.id;
         document.getElementById("pianta_nome").value = pianta.nome;
@@ -120,9 +122,11 @@ function apriPopupPianta(pianta = null) { //valore di default per pianta in modo
         document.getElementById("pianta_concimazione").value = pianta.ultimaConcimazione;
         document.getElementById("pianta_frequenza").value = pianta.frequenza;
     } else {
+        (document.querySelector(".btn_elimina_pianta")).disabled = true
         titolo.textContent = "Nuova Pianta";
         document.getElementById("form_pianta").reset();
         document.getElementById("pianta_id").value = ""; 
+        
     }
     popup.classList.add("attivo");
 }
@@ -221,4 +225,44 @@ function formattaData(stringaData) {
     if (!stringaData) return "-";
     const data = new Date(stringaData);
     return data.toLocaleDateString("it-IT"); 
+}
+async function eliminaPianta(){
+    const inputId = document.getElementById("pianta_id");
+    
+    if (!inputId) {
+        console.error("Errore: L'elemento 'pianta_id' non esiste.");
+        return;
+    }
+
+    const idCorrente = Number(inputId.value);
+    if (!idCorrente){
+        alert("Impossibile eliminare una pianta ancora non salvata ")
+    }
+    try {
+        const risposta = await fetch("/api/piante", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({id:idCorrente})
+        });
+        
+
+        const dati = await risposta.json();
+        console.log("Risposta server:", dati);
+        if (dati.success){
+            for (let i = 0;i<pianteDashboard.length;i++){
+                if(pianteDashboard[i].id === idCorrente){
+                    pianteDashboard.splice(i,1);
+                    break;
+                }
+            }
+        }
+        renderizzaTabella(); 
+        chiudiPopup(document.getElementById("popup_pianta"));
+
+    } catch (errore) {
+        console.error("Errore durante il salvataggio sul server:", errore);
+    }
+    
 }
