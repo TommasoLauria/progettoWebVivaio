@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione piante</title>
     <link rel="stylesheet" href="/style/stile.css">
+    <script src="/script/gestionePiante_script.js"></script>
 </head>
 <body>
     <nav class="navbar">
@@ -25,14 +26,131 @@
                 </div>
                 
                 <div class="menu_tendina_login" id="menu_staff_nav">
-                    <a href="/dashboard">Dashboard</a>
-                    <a href="/gestione-pianta"  class="identifica_pagina_privata">Gestione Pianta</a>
-                    <a href="/logout">Esci</a> </div>
-            </div>
+                    <a href="/dashboard" >Dashboard</a>
+                    <a href="/gestione-pianta" class="identifica_pagina_privata">Gestione Pianta</a>
+                    <a href="/logout" id="logout">Esci</a>
+                </div>
 
             <img src="./img/hamburger.png" alt="Menu" class="menu_hamburger">
         </div>
     </nav>
+    <section class="intestazione_gestione">
+        <div class="parte_sinistra">
+            <img src="" alt="" id="immagine_pianta_gestione">
+        </div>
+        <div class="parte_destra">
+            <h1 id="nome_pianta_gestione">Nome pianta</h1>
+        </div>
+    </section>
+    <section class="gestione_pianta">
+        <h2>Quantità attuale</h2>
+        <div id="quantita_attuale">X</div>
+        <div class="pulsanti_gestione">
+            <button type="button" class="btn_tondo" id="pulsante_gestione_meno">-</button>
+            <button type="button" class="btn_tondo" id="pulsante_gestione_piu">+</button>
+        </div>
+        <div class="contenitore_salva">
+            <button type="button" class="btn_salva_quantita">salva</button>
+        </div>
+
+    </section>
+    <section class="sezione_carico_scarico">
+        <h2>Carico e Scarico rapido</h2>
+        
+        <div class="input_rapido_container">
+            <label for="quantita_rapida">Quantità</label>
+            <input type="number" id="quantita_rapida">
+        </div>
+
+        <div class="toggle_container">
+            <div class="etichette_toggle">
+                <span>+</span>
+                <span>-</span>
+            </div>
+            <label class="switch_operazione">
+                <input type="checkbox" id="toggle_operazione">
+                <span class="slider_tondo"></span>
+            </label>
+        </div>
+
+        <div class="contenitore_salva">
+            <button type="button" class="btn_salva_quantita">salva</button>
+        </div>
+    </section>
+    <button id="bottone_modifica" aria-label="Modifica pianta">
+        <img src="/img/edit_icons.png" alt="Modifica">
+    </button>
+
+
+    <div id="popup_pianta" class="overlay_popup">
+        <div class="contenuto_popup">
+            <h3 id="titolo_popup_pianta">Modifica Pianta</h3>
+            <form id="form_pianta">
+                <input type="hidden" id="pianta_id">
+                
+                <div class="gruppo_input">
+                    <label for="pianta_nome">Nome pianta</label>
+                    <input type="text" id="pianta_nome" required>
+                </div>
+                
+                <div class="gruppo_input">
+                    <label for="pianta_immagine">Immagine (URL o File)</label>
+                    <input type="text" id="pianta_immagine" required>
+                </div>
+                <div class="gruppo_input">
+                    <label for="pianta_descrizione">descrizione</label>
+                    <textarea id="pianta_descrizione" required></textarea>
+                </div>
+
+                <div class="gruppo_input">
+                    <label for="pianta_categoria">Categoria</label>
+                    <select id="pianta_categoria" required>
+                        <option value="fiori">Fiori</option>
+                        <option value="alberi">Alberi</option>
+                    </select>
+                </div>
+
+                <div class="doppia_colonna">
+                    <div class="gruppo_input">
+                        <label for="pianta_prezzo">Prezzo</label>
+                        <input type="text" id="pianta_prezzo" required>
+                    </div>
+                    <div class="gruppo_input">
+                        <label for="pianta_quantita">Quantità</label>
+                        <input type="number" id="pianta_quantita" required>
+                    </div>
+                </div>
+
+                <div class="doppia_colonna">
+                    <div class="gruppo_input">
+                        <label for="pianta_concimazione">Ultima conc.</label>
+                        <input type="date" id="pianta_concimazione">
+                    </div>
+                    <div class="gruppo_input">
+                        <label for="pianta_frequenza">Frequenza (gg)</label>
+                        <input type="text" id="pianta_frequenza">
+                    </div>
+                </div>
+
+                <div class="azioni_popup">
+                    <button type="submit" id="salva_pianta">Salva</button>
+                    <button type="button" class="btn_chiudi_popup">Annulla</button>
+                    <button type="button" class="btn_elimina_pianta">Elimina</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="popup_logout" class="overlay_popup">
+        <div class="contenuto_popup" >
+            <h3>Conferma Uscita</h3>
+            <p>Sei sicuro di voler uscire dalla dashboard?</p>
+            
+            <div class="azioni_popup">
+                <button type="button" class="btn_chiudi_popup" id="annulla_logout">Annulla</button>
+                <button type="button" class="btn_elimina_pianta" id="conferma_logout">Sì, Esci</button>
+            </div>
+        </div>
+    </div>
     
     <footer class="footer">
         <div class="footer_parte_sinistra">

@@ -142,14 +142,18 @@ app.get('/gestione-pianta', (req, res) => {
     if (req.cookies.staff_auth === 'true') {
         res.sendFile(__dirname + '/private/gestionePianta.html');
     } else {
-        res.redirect(302,'/login');
+        const idPianta = req.query.id || '';
+        res.redirect(302, `/anteprima-pianta?id=${idPianta}`);
     }
 });
 app.get('/anteprima-pianta', (req, res) => {
-
-    res.sendFile(__dirname + '/public/anteprimaPianta.html');
+    if (req.cookies.staff_auth === 'true') {
+        const idPianta = req.query.id || '';
+        res.redirect(302, `/gestione-pianta?id=${idPianta}`);
+    } else {
+        res.sendFile(__dirname + '/public/anteprimaPianta.html');
+    }
 });
-
 
 app.get('/logout', (req, res) => {
     res.clearCookie('staff_auth'); 

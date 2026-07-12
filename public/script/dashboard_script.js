@@ -9,13 +9,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const linkIcona = document.getElementById("link_icona_login");
 
     if (bloccoLogin && linkIcona) {
-        // Controlla se nei cookie del browser è presente 'staff_auth=true'
         if (document.cookie.includes("staff_auth=true")) {
-            // Sei loggato! Aggiunge la classe che permette l'hover e cambia il link in /dashboard
             bloccoLogin.classList.add("loggato");
             linkIcona.href = "/dashboard";
         } else {
-            // Non sei loggato: si assicura che non ci sia la classe
             bloccoLogin.classList.remove("loggato");
             linkIcona.href = "/login";
         }
@@ -111,14 +108,14 @@ function creaRigaTabella(pianta) {
         <div class="codici"></div>
         <div class="azioni"></div>
     `;
-
-    // Inseriamo i bottoni nei contenitori (cercando la classe singola)
     const contenitoreCodici = riga.querySelector(".codici");
     contenitoreCodici.appendChild(creaBottoneIcona("barcode", () => apriPopupCodice(pianta, "barcode")));
     contenitoreCodici.appendChild(creaBottoneIcona("qr", () => apriPopupCodice(pianta, "qr")));
 
     const contenitoreAzioni = riga.querySelector(".azioni");
-    contenitoreAzioni.appendChild(creaBottoneIcona("modifica", () => apriPopupPianta(pianta)));
+    contenitoreAzioni.appendChild(creaBottoneIcona("modifica", () => {
+        window.location.href = `/gestione-pianta?id=${pianta.id}`;
+    }));
 
     return riga;
 }
@@ -138,29 +135,18 @@ function creaBottoneIcona(tipo, azioneClick) {
     return bottone;
 }
 
-function apriPopupPianta(pianta = null) { //valore di default per pianta in modo tale da fare sia modifica che nuova
+function apriPopupPianta() { 
     const popup = document.getElementById("popup_pianta");
     const titolo = document.getElementById("titolo_popup_pianta");
-    
-    if (pianta) {
-        (document.querySelector(".btn_elimina_pianta")).disabled = false
-        titolo.textContent = "Modifica Pianta";
-        document.getElementById("pianta_id").value = pianta.id;
-        document.getElementById("pianta_nome").value = pianta.nome;
-        document.getElementById("pianta_immagine").value = pianta.immagine;
-        document.getElementById("pianta_descrizione").value=pianta.descrizione;
-        document.getElementById("pianta_categoria").value = pianta.categoria;
-        document.getElementById("pianta_prezzo").value = pianta.prezzo;
-        document.getElementById("pianta_quantita").value = pianta.quantita;
-        document.getElementById("pianta_concimazione").value = pianta.ultimaConcimazione;
-        document.getElementById("pianta_frequenza").value = pianta.frequenza;
-    } else {
-        (document.querySelector(".btn_elimina_pianta")).disabled = true
-        titolo.textContent = "Nuova Pianta";
-        document.getElementById("form_pianta").reset();
-        document.getElementById("pianta_id").value = ""; 
-        
+    const btnElimina = document.querySelector(".btn_elimina_pianta");
+    if (btnElimina) {
+        btnElimina.disabled = true;
+        btnElimina.style.display = "none"; 
     }
+    titolo.textContent = "Nuova Pianta";
+    document.getElementById("form_pianta").reset();
+    document.getElementById("pianta_id").value = ""; 
+    
     popup.classList.add("attivo");
 }
 
