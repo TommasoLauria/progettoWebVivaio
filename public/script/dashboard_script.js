@@ -148,6 +148,7 @@ function apriPopupPianta(pianta = null) { //valore di default per pianta in modo
         document.getElementById("pianta_id").value = pianta.id;
         document.getElementById("pianta_nome").value = pianta.nome;
         document.getElementById("pianta_immagine").value = pianta.immagine;
+        document.getElementById("pianta_descrizione").value=pianta.descrizione;
         document.getElementById("pianta_categoria").value = pianta.categoria;
         document.getElementById("pianta_prezzo").value = pianta.prezzo;
         document.getElementById("pianta_quantita").value = pianta.quantita;
@@ -172,6 +173,7 @@ async function gestisciSalvataggioPianta(evento) {
         id: idCorrente ? Number(idCorrente) : Date.now(), 
         nome: document.getElementById("pianta_nome").value,
         immagine: document.getElementById("pianta_immagine").value,
+        descrizione:document.getElementById("pianta_descrizione").value,
         categoria: document.getElementById("pianta_categoria").value,
         prezzo: document.getElementById("pianta_prezzo").value,
         quantita: Number(document.getElementById("pianta_quantita").value),

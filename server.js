@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-app.use(express.static("public"));
+app.use(express.static("public", { extensions: ["html"] }));
 
 
 function leggiPiante() {
