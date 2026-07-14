@@ -12,15 +12,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     const bloccoLogin = document.getElementById("blocco_login_nav");
     const linkIcona = document.getElementById("link_icona_login");
-
     if (bloccoLogin && linkIcona) {
-        if (document.cookie.includes("staff_auth=true")) {
-            bloccoLogin.classList.add("loggato");
-            linkIcona.href = "/dashboard";
-        } else {
-            bloccoLogin.classList.remove("loggato");
-            linkIcona.href = "/login";
-        }
+       
+        bloccoLogin.classList.add("loggato");
     }
 });
 
@@ -92,8 +86,7 @@ function impostaEventi() {
         } else {
             quantitaCalcolata = Number(piantaCorrente.quantita) + quantitaDigitata;
         }
-        await salvaModificheServer(quantitaCalcolata);
-        inputRapido.value = ""; 
+        salvaModificheServer(quantitaCalcolata);
     });
 }
 
@@ -112,10 +105,8 @@ async function salvaModificheServer(nuovaQuantita) {
         const esito = await risposta.json();
         
         if (esito.success) {
-            alert("Quantità aggiornata nel magazzino!");
             document.getElementById("quantita_attuale").textContent = piantaCorrente.quantita;
-        } else {
-            alert("Errore durante il salvataggio sul server.");
+            mostraPopupMessaggio("Magazzino Aggiornato", "Le scorte sono state salvate correttamente.");
         }
     } catch (err) {
         console.error("Errore di rete:", err);
@@ -203,3 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+function mostraPopupMessaggio(titolo, messaggio) {
+    const popup = document.getElementById("popup_messaggio");
+    document.getElementById("titolo_messaggio").textContent = titolo;
+    document.getElementById("testo_messaggio").textContent = messaggio;
+    popup.classList.add("attivo");
+    document.getElementById("chiudi_popup_messaggio").onclick = () => {
+        popup.classList.remove("attivo");
+    };
+}

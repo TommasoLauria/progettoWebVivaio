@@ -1,21 +1,22 @@
-
+google.charts.load('current', {'packages':['corechart']});
 let pianteDashboard = [];
-
 document.addEventListener("DOMContentLoaded", async () => {
     eventiFissi();
     await caricaDatiPiante();
+    //una volta caricati i dati 
     renderizzaTabella();
+    if (pianteDashboard.length > 0) {
+        console.log("1. Piante caricate! allora avvio il worker ");
+        avviaCalcoliGrafici();
+    } else {
+        console.log("Nessuna pianta in magazzino");
+    }
+
     const bloccoLogin = document.getElementById("blocco_login_nav");
     const linkIcona = document.getElementById("link_icona_login");
-
     if (bloccoLogin && linkIcona) {
-        if (document.cookie.includes("staff_auth=true")) {
-            bloccoLogin.classList.add("loggato");
-            linkIcona.href = "/dashboard";
-        } else {
-            bloccoLogin.classList.remove("loggato");
-            linkIcona.href = "/login";
-        }
+       
+        bloccoLogin.classList.add("loggato");
     }
 });
 
@@ -23,7 +24,6 @@ function eventiFissi() {
     document.getElementById("bottone_aggiungi").addEventListener("click", () => apriPopupPianta());
     document.getElementById("form_pianta").addEventListener("submit", gestisciSalvataggioPianta);
     document.getElementById("bottone_stampa_codice").addEventListener("click", () => window.print());
-    document.getElementsByClassName("btn_elimina_pianta")[0].addEventListener("click",() =>eliminaPianta());
     document.querySelectorAll(".btn_chiudi_popup").forEach(bottone => {
         bottone.addEventListener("click", (evento) => {
             const popup = evento.target.closest(".overlay_popup");
@@ -52,7 +52,7 @@ function eventiFissi() {
 async function caricaDatiPiante() {
     try {
         const risposta = await fetch("/api/piante");
-        pianteDashboard = await risposta.json(); 
+        pianteDashboard = await risposta.json(); //carico i dati del bd nell'array locale
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
         pianteDashboard = [];
@@ -69,61 +69,100 @@ function renderizzaTabella() {
     }
 
     pianteDashboard.forEach(pianta => {
-        corpo.appendChild(creaRigaTabella(pianta));
+        if (pianta.id) {
+            const riga = creaRigaTabella(pianta);
+            if (riga instanceof Node) {
+                corpo.appendChild(riga);
+            } else {
+                console.error("Errore: creaRigaTabella non ha restituito un elemento HTML valido per la pianta:", pianta);
+            }
+        }
     });
 }
 
 function creaRigaTabella(pianta) {
-    const riga = document.createElement("div");
-    riga.className = "riga"; 
-    const coloreClasse = pianta.quantita < 5 ? "testo_rosso" : "";
-    riga.innerHTML = `
-        <div class="desktop_pianta">
-            <img src="${pianta.immagine}" class="img_desktop" > 
-            <strong>${pianta.nome}</strong>
-        </div>
-        <div class="desktop_categoria">${pianta.categoria}</div>
-        <div class="desktop_quantita ${coloreClasse}">${pianta.quantita}</div>
-        <div class="desktop_concime">${formattaData(pianta.ultimaConcimazione)}</div>
+    try {
+        const riga = document.createElement("div");
+        riga.className = "riga"; 
+        const coloreClasse = pianta.quantita < 5 ? "testo_rosso" : "";
+        
+        riga.innerHTML = `
+            <div class="desktop_pianta">
+                <img src="${pianta.immagine}" class="img_desktop" alt="pianta"> 
+                <strong>${pianta.nome || 'Senza nome'}</strong>
+            </div>
+            <div class="desktop_categoria">${pianta.categoria || '-'}</div>
+            <div class="desktop_quantita ${coloreClasse}">${pianta.quantita ?? 0}</div>
+            <div class="desktop_concime">${formattaData(pianta.ultimaConcimazione)}</div>
 
-        <div class="mobile_card">
-            <img src="${pianta.immagine}" class="img_mobile" >
-            
-            <div class="mobile_dati">
-                <div class="mobile_riga_dato">
-                    <span>Nome</span>
-                    <div class="box_input">${pianta.nome}</div>
-                </div>
-                <div class="mobile_riga_dato">
-                    <span>Quantità</span>
-                    <div class="box_input ${coloreClasse}">${pianta.quantita}</div>
-                </div>
-                <div class="mobile_riga_dato">
-                    <span>Concime</span>
-                    <div class="box_input">${formattaData(pianta.ultimaConcimazione)}</div>
+            <div class="mobile_card">
+                <img src="${pianta.immagine}" class="img_mobile" alt="pianta">
+                <div class="mobile_dati">
+                    <div class="mobile_riga_dato">
+                        <span>Nome</span>
+                        <div class="box_input">${pianta.nome || 'Senza nome'}</div>
+                    </div>
+                    <div class="mobile_riga_dato">
+                        <span>Quantità</span>
+                        <div class="box_input ${coloreClasse}">${pianta.quantita ?? 0}</div>
+                    </div>
+                    <div class="mobile_riga_dato">
+                        <span>Concime</span>
+                        <div class="box_input">${formattaData(pianta.ultimaConcimazione)}</div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="codici"></div>
+            <div class="azioni"></div>
+        `;
 
-        <div class="codici"></div>
-        <div class="azioni"></div>
-    `;
-    const contenitoreCodici = riga.querySelector(".codici");
-    contenitoreCodici.appendChild(creaBottoneIcona("barcode", () => apriPopupCodice(pianta, "barcode")));
-    contenitoreCodici.appendChild(creaBottoneIcona("qr", () => apriPopupCodice(pianta, "qr")));
+        const contenitoreCodici = riga.querySelector(".codici");
+        if(contenitoreCodici) {
+            contenitoreCodici.appendChild(creaBottoneIcona("barcode", () => apriPopupCodice(pianta, "barcode")));
+            contenitoreCodici.appendChild(creaBottoneIcona("qr", () => apriPopupCodice(pianta, "qr")));
+        }
 
-    const contenitoreAzioni = riga.querySelector(".azioni");
-    contenitoreAzioni.appendChild(creaBottoneIcona("modifica", () => {
-        window.location.href = `/gestione-pianta?id=${pianta.id}`;
-    }));
-
-    return riga;
+        const contenitoreAzioni = riga.querySelector(".azioni");
+        if(contenitoreAzioni) {
+            contenitoreAzioni.appendChild(creaBottoneIcona("modifica", () => {
+                window.location.href = `/gestione-pianta?id=${pianta.id}`;
+            }));
+            contenitoreAzioni.appendChild(creaBottoneIcona("elimina", async()=>{
+                const conferma = confirm(`Sei sicuro di voler eliminare ${pianta.nome || 'questa pianta'}?`);
+                if (!conferma) return;
+    
+                try {
+                    const risposta = await fetch("/api/piante", {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ id: pianta.id }) 
+                    });
+                    const dati = await risposta.json();
+    
+                    if (dati.success) {
+                        pianteDashboard = pianteDashboard.filter(p => p.id !== pianta.id);
+                        renderizzaTabella(); 
+                    } else {
+                        alert("Impossibile eliminare: " + dati.messaggio);
+                    }
+                } catch (err) {
+                    console.error("Errore di rete durante l'eliminazione:", err);
+                    alert("Errore di connessione col server.");
+                }
+            }));
+        }
+        return riga; 
+    } catch (err) {
+        console.error("ERRORE CRITICO in creaRigaTabella per la pianta:", pianta, err);
+        return null; 
+    }
 }
 function creaBottoneIcona(tipo, azioneClick) {
     const icone = {
         qr: "/img/qrcode_icon.png",
         barcode: "/img/barcode_icon.png",
-        modifica: "/img/edit_icons.png"
+        modifica: "/img/edit_icons.png",
+        elimina: "img/elimina.png"
     };
 
     const bottone = document.createElement("button");
@@ -131,21 +170,14 @@ function creaBottoneIcona(tipo, azioneClick) {
     bottone.className = "bottone_icona";
     bottone.innerHTML = `<img src="${icone[tipo]}" alt="${tipo}" class="icona_azione">`;
     bottone.addEventListener("click", azioneClick);
-    
     return bottone;
 }
 
 function apriPopupPianta() { 
     const popup = document.getElementById("popup_pianta");
     const titolo = document.getElementById("titolo_popup_pianta");
-    const btnElimina = document.querySelector(".btn_elimina_pianta");
-    if (btnElimina) {
-        btnElimina.disabled = true;
-        btnElimina.style.display = "none"; 
-    }
     titolo.textContent = "Nuova Pianta";
-    document.getElementById("form_pianta").reset();
-    document.getElementById("pianta_id").value = ""; 
+    document.getElementById("form_pianta").reset(); 
     
     popup.classList.add("attivo");
 }
@@ -153,10 +185,7 @@ function apriPopupPianta() {
 async function gestisciSalvataggioPianta(evento) {
     evento.preventDefault(); 
 
-    const idCorrente = document.getElementById("pianta_id").value;
-
-    const piantaSalvata = {
-        id: idCorrente ? Number(idCorrente) : Date.now(), 
+    const nuovaPianta = { 
         nome: document.getElementById("pianta_nome").value,
         immagine: document.getElementById("pianta_immagine").value,
         descrizione:document.getElementById("pianta_descrizione").value,
@@ -166,38 +195,28 @@ async function gestisciSalvataggioPianta(evento) {
         ultimaConcimazione: document.getElementById("pianta_concimazione").value,
         frequenza: document.getElementById("pianta_frequenza").value
     };
-
-    let indice = -1; 
-
-    for (let i = 0; i < pianteDashboard.length; i++) {
-        if (pianteDashboard[i].id === piantaSalvata.id) {
-            indice = i; 
-            break;      
-        }
-    }
-
-    if (indice !== -1) {
-        pianteDashboard[indice] = piantaSalvata; // Modifica
-    } else {
-        pianteDashboard.push(piantaSalvata); // Aggiungi nuova
-    }
     try {
         const risposta = await fetch("/api/piante", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(piantaSalvata)
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(nuovaPianta)
         });
 
         const dati = await risposta.json();
         console.log("Risposta server:", dati);
 
+        if (dati.success) {
+            nuovaPianta.id = dati.nuovoId; 
+            pianteDashboard.push(nuovaPianta); 
+            renderizzaTabella(); 
+            chiudiPopup(document.getElementById("popup_pianta"));
+        } else {
+            alert("Errore dal server: " + dati.messaggio);
+        }
+
     } catch (errore) {
         console.error("Errore durante il salvataggio sul server:", errore);
     }
-    renderizzaTabella(); 
-    chiudiPopup(document.getElementById("popup_pianta"));
 }
 
 function apriPopupCodice(pianta, tipo) {
@@ -229,14 +248,11 @@ function apriPopupCodice(pianta, tipo) {
             displayValue: false
         });
     }
-
-    // Aggiunge la classe per mostrare il popup
     popup.classList.add("attivo");
 }
 
 function chiudiPopup(popupElement) {
     if (popupElement) {
-        // Rimuove la classe per nascondere il popup
         popupElement.classList.remove("attivo");
     }
 }
@@ -246,43 +262,70 @@ function formattaData(stringaData) {
     const data = new Date(stringaData);
     return data.toLocaleDateString("it-IT"); 
 }
-async function eliminaPianta(){
-    const inputId = document.getElementById("pianta_id");
-    
-    if (!inputId) {
-        console.error("Errore: L'elemento 'pianta_id' non esiste.");
-        return;
-    }
 
-    const idCorrente = Number(inputId.value);
-    if (!idCorrente){
-        alert("Impossibile eliminare una pianta ancora non salvata ")
-    }
-    try {
-        const risposta = await fetch("/api/piante", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({id:idCorrente})
-        });
-        
+let datiGraficiPronti = null;
+let googleChartsPronto = false;//true una volta caricata la libreria
+google.charts.setOnLoadCallback(() => {
+    googleChartsPronto = true;
+    disegnaSeTuttoPronto(); 
+});
 
-        const dati = await risposta.json();
-        console.log("Risposta server:", dati);
-        if (dati.success){
-            for (let i = 0;i<pianteDashboard.length;i++){
-                if(pianteDashboard[i].id === idCorrente){
-                    pianteDashboard.splice(i,1);
-                    break;
-                }
-            }
+function avviaCalcoliGrafici() {
+    const worker = new Worker("./script/statistiche_worke.js");
+    worker.postMessage(pianteDashboard);//invio le piante al worker
+    worker.onmessage = (event) => {//aspetta che il worker manda done
+        if (event.data.type === "done") {
+            console.log("Il Worker ha finito ", event.data);
+            datiGraficiPronti = event.data;
+            disegnaSeTuttoPronto(); 
+            worker.terminate();
         }
-        renderizzaTabella(); 
-        chiudiPopup(document.getElementById("popup_pianta"));
-
-    } catch (errore) {
-        console.error("Errore durante il salvataggio sul server:", errore);
+    };
+    worker.onerror = (errore) => {
+        console.error("Errore catastrofico nel Web Worker:", errore.message);
+    };
+}
+function disegnaSeTuttoPronto() {
+    if (googleChartsPronto && datiGraficiPronti) {
+        disegnaGraficoTorta(datiGraficiPronti.categorie);
+        disegnaGraficoBarre(datiGraficiPronti.valori);
     }
+}
+function disegnaGraficoTorta(datiCategorie) {
+    const dataTable = [['Categoria', 'Pezzi']];
+    for (const [categoria, quantita] of Object.entries(datiCategorie)) {
+        dataTable.push([categoria, quantita]);
+    }
+
+    const data = google.visualization.arrayToDataTable(dataTable);
+    const options = {
+        title: "Distribuzione Piante per Categoria",
+        is3D: true,
+        backgroundColor: 'transparent',
+        colors: ['#2E7D32', '#8BC34A', '#558B2F', '#A1887F'], // Verde scuro, Verde chiaro, Verde oliva, Marrone terra
+        chartArea: { width: '90%', height: '80%' }
+    };
     
+    const chart = new google.visualization.PieChart(document.getElementById("grafico_torta"));
+    chart.draw(data, options);
+}
+
+function disegnaGraficoBarre(datiValori) {
+    const dataTable = [['Pianta', 'Valore (€)']];
+    datiValori.forEach(riga => dataTable.push(riga));
+
+    const data = google.visualization.arrayToDataTable(dataTable);
+    
+    const options = {
+        title: "Valore Magazzino per Pianta (€)",
+        legend: { position: "none" },
+        backgroundColor: 'transparent',
+        colors: ['#2E7D32'], 
+        hAxis: { title: 'Valore in Euro (€)' },
+        vAxis: { title: 'Pianta' },
+        animation: { startup: true, duration: 1000, easing: 'out' }
+    };
+
+    const chart = new google.visualization.ColumnChart(document.getElementById("grafico_barre"));
+    chart.draw(data, options);
 }

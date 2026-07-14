@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Gestione Piante</title>
     <link rel="stylesheet" href="/style/stile.css">
-    
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     
@@ -38,6 +38,10 @@
             <img src="./img/hamburger.png" alt="Menu" class="menu_hamburger">
         </div>
     </nav>
+    <div class="sezione_grafici">
+        <div id="grafico_torta" ></div>
+        <div id="grafico_barre" ></div>
+    </div>
     <section id="gestione_piante">
         <h2>Gestione Piante</h2>
 
@@ -51,7 +55,7 @@
         </div>
 
         <div id="corpo">
-            </div>
+        </div>
 
         <button id="bottone_aggiungi" aria-label="Aggiungi pianta">
             <img src="/img/plus-icon.png" alt="Aggiungi">
@@ -127,6 +131,17 @@
             <div class="azioni_popup">
                 <button type="button" id="bottone_stampa_codice">Stampa</button>
                 <button type="button" class="btn_chiudi_popup">Chiudi</button>
+            </div>
+        </div>
+    </div>
+    <div id="popup_conferma_eliminazione" class="overlay_popup">
+        <div class="contenuto_popup">
+            <h3>Conferma Eliminazione</h3>
+            <p id="testo_conferma_eliminazione">Sei sicuro di voler eliminare questa pianta?</p>
+            
+            <div class="azioni_popup">
+                <button type="button" class="btn_chiudi_popup" id="annulla_eliminazione">Annulla</button>
+                <button type="button" class="btn_elimina_pianta" id="conferma_eliminazione">Sì, Elimina</button>
             </div>
         </div>
     </div>

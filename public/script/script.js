@@ -22,14 +22,19 @@ window.onload=function(){
             tendinaCategoria.addEventListener("change", filtraPiante); 
         }
     }
-
-    if (document.getElementById("gestione")) {
-        inizializzaDashboard();
+    //credenziali errate
+    const parametriUrl = new URLSearchParams(window.location.search);
+    if (parametriUrl.get('error') === 'credenziali_errate') {
+        const erroreP = document.getElementById('messaggio_errore');
+        if (erroreP) {
+            erroreP.textContent = "Credenziali errate, riprova!";
+        }
     }
+    //chiamata per anterpimaPiante
     if (document.getElementById("pianta_nome")) {
         const parametriUrl = new URLSearchParams(window.location.search);
         const idPianta = parametriUrl.get("id");
-        caricaAnteprima(idPianta);
+        caricaAnteprima(idPianta); 
     }
 };
 
@@ -69,12 +74,14 @@ function mostraPiante(piante) {
         img.src = pianta.immagine;
         img.alt = pianta.nome;
         divImgPianta.appendChild(img);
+
         const divOverlay = document.createElement("div");
         divOverlay.classList.add("overlay_text");
         const qDescrizione = document.createElement("q");
         qDescrizione.textContent = pianta.descrizione;
+
         const aLink = document.createElement("a");
-        aLink.href = pianta.link; 
+        aLink.href = `/anteprima-pianta?id=${pianta.id}`; 
         aLink.textContent = "Scopri";
         divOverlay.appendChild(qDescrizione);
         divOverlay.appendChild(aLink);
@@ -92,13 +99,13 @@ function mostraPiante(piante) {
 
         const pPrezzo = document.createElement("p");
         pPrezzo.classList.add("prezzo_pianta");
-        pPrezzo.textContent = pianta.prezzo;
+        pPrezzo.textContent = pianta.prezzo+" €";
         divNomePrezzo.appendChild(pNome);
         divNomePrezzo.appendChild(pPrezzo);
 
         const pDisponibilita = document.createElement("p");
         pDisponibilita.classList.add("disponibilita_pianta");
-        pDisponibilita.textContent=pianta.disponibilita;
+        pDisponibilita.textContent = pianta.quantita > 0 ? "Disponibili"+pianta.quantita : "Esaurita";
 
         divInfoCatalogo.appendChild(divNomePrezzo);
         divInfoCatalogo.appendChild(pDisponibilita);
@@ -117,8 +124,8 @@ function filtraPiante(){
         let pianta = piante[i];
         let nome = false;
         let categoria = false; 
-        if(pianta.nome.toLowerCase().includes(testoRicerca)){
-            nome =true;
+        if(pianta.nome.toLowerCase().startsWith(testoRicerca)){
+            nome=true;
         }     
         if (categoriaRicercata === "tutte" || pianta.categoria === categoriaRicercata) {
             categoria = true;
@@ -153,7 +160,7 @@ async function caricaAnteprima(idPianta) {
             document.getElementById("pianta_img").src = piantaTrovata.immagine;
             document.getElementById("pianta_nome").textContent=piantaTrovata.nome;
             document.getElementById("pianta_descrizione").textContent=piantaTrovata.descrizione || "nessuna descrizione per questa pianta";
-            document.getElementById("pianta_prezzo").textContent= piantaTrovata.prezzo
+            document.getElementById("pianta_prezzo").textContent= piantaTrovata.prezzo+" €"
         }
         else 
         {

@@ -1,165 +1,177 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const fs = require("fs");
 const path = require("path");
-const FILE_PATH = path.join(__dirname, "piante.json");
+const mysql = require("mysql2");
+const jwt = require("jsonwebtoken"); 
+const JWT_SECRET = "chiave_segreta"; 
+
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+
+const pool = mysql.createPool({
+    host:"localhost",
+    user:"root",
+    password:"",
+    database:"vivaio",
+    waitForConnections:true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
+const promisePool=pool.promise();
+//middleware
 app.use((req, res, next) => {
-    console.log(`[LOG] Ricevuta richiesta: ${req.method} ${req.url}`);
-    next(); // Continua verso le rotte successive
+    console.log(`log Ricevuta richiesta: ${req.method} ${req.url}`);
+    next(); 
 });
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); //middlware per leggere i dati inviati tramite form 
 app.use(cookieParser());
-
-
-app.use(express.static("public", { extensions: ["html"] }));
-
-
-function leggiPiante() {
-    try {
-        if (!fs.existsSync(FILE_PATH)) {
-            fs.writeFileSync(FILE_PATH, JSON.stringify([]), "utf-8");
-            return [];
-        }
-        const dati = fs.readFileSync(FILE_PATH, "utf-8");
-        return JSON.parse(dati);
-    } catch (error) {
-        console.error("Errore nella lettura del file:", error);
-        return [];
-    }
-}
-function aggiungiPianta(nuovaPianta) {
-    const piante = leggiPiante();
-    piante.push(nuovaPianta);
-    fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
-    return piante;
-}
-function modificaPianta(id, datiAggiornati) {
-    const piante = leggiPiante();
-    const index = piante.findIndex(p => Number(p.id) === Number(id));
-    
-    if (index !== -1) {
-        piante[index] = { ...datiAggiornati, id: Number(id) };
-        fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
-        return true;
-    }
-    return false;
-}
-function eliminaPianta(id) {
-    const piante = leggiPiante();
-    let nomeEliminato = "";
-    const vecchioLunghezza = piante.length;
-
-    for (let i = 0; i < piante.length; i++) {
-        if (Number(piante[i].id) === Number(id)) {
-            nomeEliminato = piante[i].nome;
-            piante.splice(i, 1);
-            break;
-        }
-    }
-
-    if (piante.length < vecchioLunghezza) {
-        fs.writeFileSync(FILE_PATH, JSON.stringify(piante), "utf-8");
-        return nomeEliminato; 
-    }
-    return null; 
-}
-
 app.get('/login', (req, res) => {
-   
-    if (req.cookies.staff_auth === 'true') {
+    if (req.cookies.token) {
         res.redirect(302, '/dashboard');
     } else {
         res.sendFile(__dirname + '/public/login.html');
     }
 });
+app.use(express.static("public", { extensions: ["html"] }));
 
 
-
-
-
-app.get('/api/piante', (req, res) => {
-    res.json(leggiPiante());
+//rotte
+app.get('/api/piante', async (req, res) => {
+    try{
+        const [righe] = await promisePool.execute("SELECT * FROM piante"); //la query restituisce un array di due elementi, in 0 abbiamo i dati e in 1 i metadati
+        res.json(righe);
+    }catch(e){
+        console.error("errore letture DB:",e);
+        res.json([]);
+    }
 });
-app.post('/api/piante', (req, res) => {
-    const piantaRicevuta = req.body;
-    const pianteAttuali = leggiPiante();
-    
-    let esiste = false; 
-
-    for (let i = 0; i < pianteAttuali.length; i++) {
-        if (Number(pianteAttuali[i].id) === Number(piantaRicevuta.id)) {
-            esiste = true; 
-            break;         
+app.post('/api/piante', async (req, res) => {
+    const dati = req.body;
+    let dataConcimazione = null;
+    if (dati.ultimaConcimazione) {
+        dataConcimazione = dati.ultimaConcimazione.substring(0, 10); //   'aaaa/mm/gg'
+    }
+    try {
+        if (dati.id) {
+            const queryUpdate = `UPDATE piante SET nome=?, immagine=?, descrizione=?, categoria=?, prezzo=?, quantita=?, ultimaConcimazione=?, frequenza=? WHERE id=?`;
+            await promisePool.execute(queryUpdate, [
+                dati.nome, dati.immagine, dati.descrizione, dati.categoria, dati.prezzo, dati.quantita, dati.dataConcimazione, dati.frequenza, dati.id
+            ]);
+            res.json({ success: true, messaggio: "Pianta modificata con successo!" });
+        
+        } else {
+            const queryInsert = `INSERT INTO piante (nome, immagine, descrizione, categoria, prezzo, quantita, ultimaConcimazione, frequenza) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+            const [info] = await promisePool.execute(queryInsert, [
+                dati.nome, dati.immagine, dati.descrizione, dati.categoria, dati.prezzo, dati.quantita, dataConcimazione, dati.frequenza
+            ]);
+            res.json({ success: true, messaggio: "Nuova pianta aggiunta con successo!", nuovoId: info.insertId });
         }
-    }
-    
-    if (esiste) {
-        const successo = modificaPianta(piantaRicevuta.id, piantaRicevuta); 
-        res.json({ success: successo, messaggio: successo ? "Pianta modificata con successo!" : "Errore nella modifica." }); //
-    } else {
-        aggiungiPianta(piantaRicevuta); 
-        res.json({ success: true, messaggio: "Nuova pianta aggiunta con successo!" }); 
+    } catch (error) {
+        console.error("Errore salvataggio DB:", error);
+        res.json({ success: false, messaggio: "Errore nel database." });
     }
 });
-app.delete('/api/piante', (req, res) => {
+app.delete('/api/piante', async (req, res) => {
     const idDaEliminare = req.body.id;
-    const nomeCancellato = eliminaPianta(idDaEliminare);
+    try {
+        const [pianta] = await promisePool.execute("SELECT nome FROM piante WHERE id = ?", [idDaEliminare]);
+        
+        if (pianta.length > 0) { //verifico se effitivamente c'è una riga con quell'id
+            await promisePool.execute("DELETE FROM piante WHERE id = ?", [idDaEliminare]);
+            res.json({ success: true, messaggio: "Pianta eliminata dal db!", nome: pianta[0].nome });
+        } else {
+            res.json({ success: false, messaggio: "Pianta non trovata o già eliminata.", nome: "" });
+        }
+    } catch (error) {
+        console.error("Errore cancellazione DB:", error);
+        res.json({ success: false, messaggio: "Errore interno.", nome: "" });
+    }
+});
+function authenticateToken(req, res, next) {
+    const token = req.cookies.token; 
     
-    if (nomeCancellato !== null) {
-        res.json({ success: true, messaggio: "pianta eliminata dal db!", nome: nomeCancellato });
-    } else {
-        res.json({ success: false, messaggio: "Pianta non trovata o già eliminata.", nome: "" });
+    if (!token) {
+        return res.redirect(302, "/login"); 
     }
-});
-
-app.post('/login', (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
     
-    console.log("Tentativo di login con:", username, password);
+    try {
+        const payload = jwt.verify(token, JWT_SECRET);
+        req.user = payload; 
+        next(); 
+    } catch (err) {
+        return res.redirect(302, "/login"); 
+    }
+}
+app.get('/login', (req, res) => {
+    if (req.cookies.token) {
+        res.redirect(302, '/dashboard');
+    } else {
+        res.sendFile(__dirname + '/public/login.html');
+    }
+});
+app.use(express.static("public", { extensions: ["html"] }));
+
+
+app.post('/login', async (req, res) => {
+
+    const username = req.body.username; 
+    const password = req.body.password; 
     
-    if (username === 'admin' && password === 'admin') {
-        res.cookie('staff_auth', 'true', { maxAge: 3600000,path: '/'});
-        res.redirect(302,'/dashboard');
-    } else {
-        res.redirect(302,'/login?error=credenziali_errate');
+    try {
+        const query = "SELECT id, nome FROM utenti WHERE email = ? AND password = ?";
+        const [righe] = await promisePool.execute(query, [username, password]); 
+
+        if (righe.length > 0) {
+            const user = righe[0];
+            
+            const payload = {
+                userId: user.id, 
+                userName: user.nome 
+            };
+            
+            const token = jwt.sign(payload, JWT_SECRET, { algorithm: "HS256", expiresIn: "1h" });
+            
+            res.cookie("token", token, {
+                httpOnly: true, 
+                secure: false,  
+                maxAge: 3600000,
+                sameSite: "Strict" //impedisce attacchi di tipo crossSite
+            });
+            
+            res.redirect(302, '/dashboard');
+        } else {
+            res.redirect(302, '/login?error=credenziali_errate');
+        }
+    } catch (err) {
+        console.error("Errore DB Login:", err);
+        res.status(500).send("Errore del server");
     }
 });
-
-
-app.get('/dashboard', (req, res) => {
-    if (req.cookies.staff_auth === 'true') {
-        res.sendFile(__dirname + '/private/dashboard.html');
-    } else {
-        res.redirect(302,'/login');
-    }
+app.get('/logout', (req, res) => {
+    res.clearCookie('token'); 
+    res.redirect(302, '/login');   
 });
 
-app.get('/gestione-pianta', (req, res) => {
-    if (req.cookies.staff_auth === 'true') {
-        res.sendFile(__dirname + '/private/gestionePianta.html');
-    } else {
-        const idPianta = req.query.id || '';
-        res.redirect(302, `/anteprima-pianta?id=${idPianta}`);
-    }
+app.get('/dashboard', authenticateToken, (req, res) => {
+    console.log("l'utente che è entrato in dashboard è:", req.user.userName)
+    res.sendFile(__dirname + '/private/dashboard.html');
+
 });
+
+app.get('/gestione-pianta', authenticateToken, (req, res) => {
+    console.log("l'utente che è entrata in gestione-pianta è: ", req.user.userName)
+    res.sendFile(__dirname + '/private/gestionePianta.html');
+});
+
 app.get('/anteprima-pianta', (req, res) => {
-    if (req.cookies.staff_auth === 'true') {
+    if (req.cookies.token) {
         const idPianta = req.query.id || '';
         res.redirect(302, `/gestione-pianta?id=${idPianta}`);
     } else {
         res.sendFile(__dirname + '/public/anteprimaPianta.html');
     }
 });
-
-app.get('/logout', (req, res) => {
-    res.clearCookie('staff_auth'); 
-    res.redirect(302, '/login');   
-});
-
 
 app.listen(port, () => {
     console.log("Server attivo su http://localhost:" + port);
