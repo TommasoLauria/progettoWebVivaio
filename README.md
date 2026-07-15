@@ -151,6 +151,8 @@ Lo staff puo':
 
 ## Database previsto
 
+Il progetto usa un database MySQL chiamato `vivaio`. Lo schema completo e' disponibile nel file `database.sql`.
+
 ### Utenti
 
 - `id`
@@ -161,16 +163,16 @@ Lo staff puo':
 ### Piante
 
 - `id`
-- `codice_qr`
-- `codice_a_barre`
 - `nome`
+- `immagine`
 - `descrizione`
-- `prezzo`
 - `categoria`
-- `immagine_url`
-- `giacenza`
-- `ultima_concimazione`
-- `frequenza_concimazione`
+- `prezzo`
+- `quantita`
+- `ultimaConcimazione`
+- `frequenza`
+
+Le colonne `codice_qr` e `codice_a_barre` non sono salvate nel database: QR code e barcode vengono generati dinamicamente nella dashboard usando l'id della pianta.
 
 ## Tecnologie
 
@@ -188,21 +190,70 @@ Lo staff puo':
 - Titoli: Montserrat
 - Testi e dashboard: Inter
 
-## Avvio locale
+## Prerequisiti
 
-Installa le dipendenze:
+Per avviare il progetto in locale sono necessari:
+
+- Node.js;
+- npm;
+- MySQL Server avviato;
+- un utente MySQL `root` senza password, come configurato in `server.js`.
+
+La connessione al database e' configurata nel file `server.js` con questi parametri:
+
+```js
+host: "localhost"
+user: "root"
+password: ""
+database: "vivaio"
+```
+
+## Installazione e avvio
+
+1. Clonare o scaricare il progetto.
+
+2. Aprire il terminale nella cartella del progetto.
+
+3. Installare le dipendenze:
 
 ```bash
 npm install
 ```
 
-Avvia il server:
+4. Importare il database MySQL:
+
+```bash
+mysql -u root < database.sql
+```
+
+Il file `database.sql` crea il database `vivaio`, le tabelle `utenti` e `piante`, un utente staff iniziale e alcune piante di esempio.
+
+Se nel computer esiste gia' un vecchio database `vivaio` con una struttura diversa, eliminarlo prima di importare il file:
+
+```bash
+mysql -u root
+```
+
+Poi dentro MySQL:
+
+```sql
+DROP DATABASE vivaio;
+EXIT;
+```
+
+Infine rieseguire:
+
+```bash
+mysql -u root < database.sql
+```
+
+5. Avviare il server:
 
 ```bash
 npm run dev
 ```
 
-Apri il sito:
+6. Aprire il sito nel browser:
 
 ```text
 http://localhost:3000
@@ -214,6 +265,71 @@ http://localhost:3000
 username: admin
 password: admin
 ```
+
+La password non e' salvata in chiaro nel database: nella tabella `utenti` viene salvato il campo `password_hash`, verificato dal server tramite `bcrypt`.
+
+## Utilizzo dell'applicativo
+
+### Area pubblica
+
+L'area pubblica e' accessibile senza login.
+
+Percorsi principali:
+
+- `/` oppure `/index`: home page del vivaio;
+- `/chiSiamo`: pagina di presentazione del vivaio;
+- `/catalogo`: catalogo piante con ricerca e filtro per categoria;
+- `/contatti`: pagina con form, mappa e informazioni di contatto;
+- `/anteprima-pianta?id=ID`: scheda pubblica di una pianta.
+
+Nel catalogo l'utente puo':
+
+- visualizzare le piante disponibili;
+- cercare una pianta per nome;
+- filtrare le piante per categoria;
+- aprire la scheda della singola pianta.
+
+### Area staff
+
+L'area staff richiede il login dalla pagina:
+
+```text
+http://localhost:3000/login
+```
+
+Dopo l'accesso viene aperta la dashboard privata:
+
+```text
+http://localhost:3000/dashboard
+```
+
+Nella dashboard lo staff puo':
+
+- visualizzare tutte le piante presenti nel database;
+- cercare e filtrare le piante;
+- aggiungere una nuova pianta con il pulsante `+`;
+- generare QR code e barcode per una pianta;
+- stampare il codice generato;
+- eliminare una pianta;
+- aprire la pagina di gestione della singola pianta.
+
+La pagina di gestione della pianta e' disponibile all'indirizzo:
+
+```text
+http://localhost:3000/gestione-pianta?id=ID
+```
+
+In questa pagina lo staff puo':
+
+- vedere nome, immagine e quantita' attuale della pianta;
+- aumentare o diminuire la quantita' con i pulsanti `+` e `-`;
+- usare il carico/scarico rapido inserendo una quantita';
+- modificare i dati principali della pianta tramite popup;
+- salvare le modifiche nel database.
+
+### Logout
+
+Per uscire dall'area staff usare il comando `Esci` nel menu utente. Il server elimina il cookie di autenticazione e riporta alla pagina di login.
 
 ## Anteprime dal documento di progetto
 

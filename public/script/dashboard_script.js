@@ -62,6 +62,9 @@ function eventiFissi() {
 async function caricaDatiPiante() {
     try {
         const risposta = await fetch("/api/piante");
+        if (!risposta.ok) {
+            throw new Error("Errore nel caricamento delle piante");
+        }        
         pianteDashboard = await risposta.json(); //carico i dati del bd nell'array locale
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
@@ -108,15 +111,15 @@ function creaRigaTabella(pianta) {
             <div class="mobile_card">
                 <img src="${pianta.immagine}" class="img_mobile" alt="pianta">
                 <div class="mobile_dati">
-                    <div class="mobile_riga_dato">
+                    <div class="riga_anteprima">
                         <span>Nome</span>
                         <div class="box_input">${pianta.nome || 'Senza nome'}</div>
                     </div>
-                    <div class="mobile_riga_dato">
+                    <div class="riga_anteprima">
                         <span>Quantità</span>
                         <div class="box_input ${coloreClasse}">${pianta.quantita ?? 0}</div>
                     </div>
-                    <div class="mobile_riga_dato">
+                    <div class="riga_anteprima">
                         <span>Concime</span>
                         <div class="box_input">${formattaData(pianta.ultimaConcimazione)}</div>
                     </div>

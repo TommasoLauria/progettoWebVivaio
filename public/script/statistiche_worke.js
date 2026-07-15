@@ -18,7 +18,8 @@ self.onmessage = function(e) {
         } else {
             conteggioCategorie[cat] = quantitaNumerica;
         }
-        const prezzoNumerico = Number(pianta.prezzo);
+        const prezzoPulito = String(pianta.prezzo).replace(",", ".");
+        const prezzoNumerico = Number(prezzoPulito) || 0;
         const valoreTotale = prezzoNumerico * quantitaNumerica;
         
         valori.push([pianta.nome, valoreTotale]);

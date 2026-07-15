@@ -709,7 +709,7 @@ p.titolo_footer{
 }
 
 /* pagina catalogo*/
-#sezione_filtri .contenitore_filtri {
+.sezione_filtri .contenitore_filtri {
     display: flex;
     gap: 20px;
     padding: 0 40px; 
@@ -718,7 +718,7 @@ p.titolo_footer{
     margin:auto;
 }
 
-#sezione_filtri #cerca_pianta {
+.sezione_filtri .cerca_pianta {
     flex: 3; 
     padding: 12px 15px;
     border: 2px solid #306D29; 
@@ -728,7 +728,7 @@ p.titolo_footer{
     outline: none;
 }
 
-#sezione_filtri #filtro {
+.sezione_filtri .filtro {
     flex: 1; 
     padding: 12px 15px;
     border: 2px solid #306D29;
@@ -765,7 +765,7 @@ p.titolo_footer{
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    #sezione_filtri .contenitore_filtri {
+    .sezione_filtri .contenitore_filtri {
         flex-direction: column;
         padding: 0 20px;
         gap: 12px;
@@ -1702,7 +1702,7 @@ p.titolo_footer{
     transform: translateY(-5px);
 }
 
-#messaggio_errore{
+.messaggio_errore{
     color:#306D29;
     font-size: 0.8em;
 }

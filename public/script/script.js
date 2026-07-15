@@ -43,6 +43,9 @@ async function caricaCatalogo() {
     const griglia = document.getElementById("griglia_catalogo");
     try{
         const res = await fetch ('/api/piante');
+        if(!res.ok){
+            throw new error("errore nel caricamento delle piante");
+        }
         piante = await res.json();
         mostraPiante(piante);
             
@@ -105,7 +108,7 @@ function mostraPiante(piante) {
 
         const pDisponibilita = document.createElement("p");
         pDisponibilita.classList.add("disponibilita_pianta");
-        pDisponibilita.textContent = pianta.quantita > 0 ? "Disponibili"+pianta.quantita : "Esaurita";
+        pDisponibilita.textContent = pianta.quantita > 0 ? "Disponibili "+pianta.quantita : "Esaurita";
 
         divInfoCatalogo.appendChild(divNomePrezzo);
         divInfoCatalogo.appendChild(pDisponibilita);

@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
             piantaCorrente.descrizione = document.getElementById("pianta_descrizione").value;
             piantaCorrente.categoria = document.getElementById("pianta_categoria").value;
             piantaCorrente.prezzo = document.getElementById("pianta_prezzo").value;
+            piantaCorrente.quantita = Number(document.getElementById("pianta_quantita").value);
             piantaCorrente.ultimaConcimazione = document.getElementById("pianta_concimazione").value;
             piantaCorrente.frequenza = document.getElementById("pianta_frequenza").value;
 
@@ -166,6 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Aggiorna i testi nella pagina sotto il popup
             document.getElementById("nome_pianta_gestione").textContent = piantaCorrente.nome;
             document.getElementById("immagine_pianta_gestione").src = piantaCorrente.immagine;
+            document.getElementById("quantita_attuale").textContent = piantaCorrente.quantita;
             
             popup.classList.remove("attivo");
         });

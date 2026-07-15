@@ -4,6 +4,7 @@ const path = require("path");
 const mysql = require("mysql2");
 const jwt = require("jsonwebtoken"); 
 const JWT_SECRET = "chiave_segreta"; 
+const bcrypt = require("bcrypt");
 
 const app = express();
 const port = 3000;
@@ -34,7 +35,21 @@ app.get('/login', (req, res) => {
     }
 });
 app.use(express.static("public", { extensions: ["html"] }));
-
+function authenticateToken(req, res, next) {
+    const token = req.cookies.token; 
+    
+    if (!token) {
+        return res.redirect(302, "/login"); 
+    }
+    
+    try {
+        const payload = jwt.verify(token, JWT_SECRET);
+        req.user = payload; 
+        next(); 
+    } catch (err) {
+        return res.redirect(302, "/login"); 
+    }
+}
 
 //rotte
 app.get('/api/piante', async (req, res) => {
@@ -42,11 +57,14 @@ app.get('/api/piante', async (req, res) => {
         const [righe] = await promisePool.execute("SELECT * FROM piante"); //la query restituisce un array di due elementi, in 0 abbiamo i dati e in 1 i metadati
         res.json(righe);
     }catch(e){
-        console.error("errore letture DB:",e);
-        res.json([]);
+        console.error("errore letture DB:", e);
+        res.status(500).json({
+        success: false,
+        messaggio: "Errore nel caricamento delle piante dal database"
+    });
     }
 });
-app.post('/api/piante', async (req, res) => {
+app.post('/api/piante',authenticateToken, async (req, res) => {
     const dati = req.body;
     let dataConcimazione = null;
     if (dati.ultimaConcimazione) {
@@ -72,7 +90,7 @@ app.post('/api/piante', async (req, res) => {
         res.json({ success: false, messaggio: "Errore nel database."+error });
     }
 });
-app.delete('/api/piante', async (req, res) => {
+app.delete('/api/piante',authenticateToken, async (req, res) => {
     const idDaEliminare = req.body.id;
     try {
         const [pianta] = await promisePool.execute("SELECT nome FROM piante WHERE id = ?", [idDaEliminare]);
@@ -88,29 +106,6 @@ app.delete('/api/piante', async (req, res) => {
         res.json({ success: false, messaggio: "Errore interno.", nome: "" });
     }
 });
-function authenticateToken(req, res, next) {
-    const token = req.cookies.token; 
-    
-    if (!token) {
-        return res.redirect(302, "/login"); 
-    }
-    
-    try {
-        const payload = jwt.verify(token, JWT_SECRET);
-        req.user = payload; 
-        next(); 
-    } catch (err) {
-        return res.redirect(302, "/login"); 
-    }
-}
-app.get('/login', (req, res) => {
-    if (req.cookies.token) {
-        res.redirect(302, '/dashboard');
-    } else {
-        res.sendFile(__dirname + '/public/login.html');
-    }
-});
-app.use(express.static("public", { extensions: ["html"] }));
 
 
 app.post('/login', async (req, res) => {
@@ -119,30 +114,37 @@ app.post('/login', async (req, res) => {
     const password = req.body.password; 
     
     try {
-        const query = "SELECT id, nome FROM utenti WHERE email = ? AND password = ?";
-        const [righe] = await promisePool.execute(query, [username, password]); 
+        const query = "SELECT id, nome, password_hash FROM utenti WHERE email = ?";
+        const [righe] = await promisePool.execute(query, [username]); 
 
-        if (righe.length > 0) {
-            const user = righe[0];
-            
-            const payload = {
-                userId: user.id, 
-                userName: user.nome 
-            };
-            
-            const token = jwt.sign(payload, JWT_SECRET, { algorithm: "HS256", expiresIn: "1h" });
-            
-            res.cookie("token", token, {
-                httpOnly: true, 
-                secure: false,  
-                maxAge: 3600000,
-                sameSite: "Strict" //impedisce attacchi di tipo crossSite
-            });
-            
-            res.redirect(302, '/dashboard');
-        } else {
-            res.redirect(302, '/login?error=credenziali_errate');
+        if (righe.length === 0) {
+            return res.redirect(302, '/login?error=credenziali_errate');
         }
+
+        const user = righe[0];
+
+        const passwordCorretta = await bcrypt.compare(password, user.password_hash);
+
+        if (!passwordCorretta) {
+            return res.redirect(302, '/login?error=credenziali_errate');
+        }
+        
+        const payload = {
+            userId: user.id, 
+            userName: user.nome 
+        };
+        
+        const token = jwt.sign(payload, JWT_SECRET, { algorithm: "HS256", expiresIn: "1h" });
+        
+        res.cookie("token", token,{
+            httpOnly: true, 
+            secure: false,  
+            maxAge: 3600000,
+            sameSite: "Strict"
+        });
+        
+        res.redirect(302, '/dashboard');
+
     } catch (err) {
         console.error("Errore DB Login:", err);
         res.status(500).send("Errore del server");
