@@ -18,6 +18,16 @@ document.addEventListener("DOMContentLoaded", async () => {
        
         bloccoLogin.classList.add("loggato");
     }
+    const corpo = document.getElementById("corpo");
+    if (corpo) {
+        const inputRicerca = document.getElementById("cerca_pianta");
+        const tendinaCategoria = document.getElementById("filtro");
+
+        if (inputRicerca && tendinaCategoria) {
+            inputRicerca.addEventListener("input", filtraPiante); 
+            tendinaCategoria.addEventListener("change", filtraPiante); 
+        }
+    }
 });
 
 function eventiFissi() {
@@ -302,7 +312,7 @@ function disegnaGraficoTorta(datiCategorie) {
         title: "Distribuzione Piante per Categoria",
         is3D: true,
         backgroundColor: 'transparent',
-        colors: ['#2E7D32', '#8BC34A', '#558B2F', '#A1887F'], // Verde scuro, Verde chiaro, Verde oliva, Marrone terra
+        colors: ['#2E7D32', '#8BC34A', '#558B2F', '#A1887F'], 
         chartArea: { width: '90%', height: '80%' }
     };
     
@@ -322,10 +332,46 @@ function disegnaGraficoBarre(datiValori) {
         backgroundColor: 'transparent',
         colors: ['#2E7D32'], 
         hAxis: { title: 'Valore in Euro (€)' },
-        vAxis: { title: 'Pianta' },
+        vAxis: { 
+            title: 'Pianta',
+            textStyle: { fontSize: 11 }
+        },
+        chartArea: { left: 120, width: '70%' }, 
         animation: { startup: true, duration: 1000, easing: 'out' }
     };
-
-    const chart = new google.visualization.ColumnChart(document.getElementById("grafico_barre"));
+    const chart = new google.visualization.BarChart(document.getElementById("grafico_barre"));
     chart.draw(data, options);
+}
+function filtraPiante(){
+    const testoRicerca = document.getElementById("cerca_pianta").value.toLowerCase();
+    const categoriaRicercata = document.getElementById("filtro").value;
+    let pianteFiltrate = [];
+    
+    for (let i = 0; i < pianteDashboard.length; i++){
+        let pianta = pianteDashboard[i];
+        let nome = false;
+        let categoria = false; 
+        const nomePianta = (pianta.nome || "").toLowerCase();
+        if(nomePianta.includes(testoRicerca)){
+            nome = true;
+        }
+        if (categoriaRicercata === "tutte" || pianta.categoria === categoriaRicercata) {
+            categoria = true;
+        }
+        if(nome === true && categoria === true){
+            pianteFiltrate.push(pianta);
+        }
+    }
+    const corpo = document.getElementById("corpo");
+    corpo.innerHTML = "";
+    if (pianteFiltrate.length === 0) {
+        corpo.innerHTML = `<p class="messaggio_errore">Nessuna pianta trovata.</p>`;
+        return;
+    }
+    for (let i = 0; i < pianteFiltrate.length; i++) {
+        const riga = creaRigaTabella(pianteFiltrate[i]);
+        if (riga instanceof Node) {
+            corpo.appendChild(riga);
+        }
+    }
 }

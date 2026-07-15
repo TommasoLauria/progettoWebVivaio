@@ -56,7 +56,7 @@ app.post('/api/piante', async (req, res) => {
         if (dati.id) {
             const queryUpdate = `UPDATE piante SET nome=?, immagine=?, descrizione=?, categoria=?, prezzo=?, quantita=?, ultimaConcimazione=?, frequenza=? WHERE id=?`;
             await promisePool.execute(queryUpdate, [
-                dati.nome, dati.immagine, dati.descrizione, dati.categoria, dati.prezzo, dati.quantita, dati.dataConcimazione, dati.frequenza, dati.id
+                dati.nome, dati.immagine, dati.descrizione, dati.categoria, dati.prezzo, dati.quantita, dataConcimazione, dati.frequenza, dati.id
             ]);
             res.json({ success: true, messaggio: "Pianta modificata con successo!" });
         
@@ -69,7 +69,7 @@ app.post('/api/piante', async (req, res) => {
         }
     } catch (error) {
         console.error("Errore salvataggio DB:", error);
-        res.json({ success: false, messaggio: "Errore nel database." });
+        res.json({ success: false, messaggio: "Errore nel database."+error });
     }
 });
 app.delete('/api/piante', async (req, res) => {

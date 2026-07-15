@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard Gestione Piante</title>
     <link rel="stylesheet" href="/style/stile.css">
     <script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -42,6 +42,19 @@
         <div id="grafico_torta" ></div>
         <div id="grafico_barre" ></div>
     </div>
+    <section id="sezione_filtri">
+        <div class="contenitore_filtri">
+            <input type="text" id="cerca_pianta" placeholder="Cerca una pianta...">
+            <select id="filtro">
+                <option value="tutte">Tutte le categorie</option>
+                <option value="fiori">Fiori</option>
+                <option value="alberi">Alberi</option>
+                <option value="piante_da_giardino">Piante da giardino</option>
+                <option value="orto">Ortaggi</option>
+                <option value="prodotti">Prodotti</option>
+            </select>
+        </div>
+    </section>
     <section id="gestione_piante">
         <h2>Gestione Piante</h2>
 
@@ -87,6 +100,9 @@
                     <select id="pianta_categoria" required>
                         <option value="fiori">Fiori</option>
                         <option value="alberi">Alberi</option>
+                        <option value="piante_da_giardino">Piante da giardino</option>
+                        <option value="orto">Ortaggi</option>
+                        <option value="prodotti">Prodotti</option>
                     </select>
                 </div>
 

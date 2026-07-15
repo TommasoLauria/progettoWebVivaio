@@ -106,7 +106,10 @@ async function salvaModificheServer(nuovaQuantita) {
         
         if (esito.success) {
             document.getElementById("quantita_attuale").textContent = piantaCorrente.quantita;
-            mostraPopupMessaggio("Magazzino Aggiornato", "Le scorte sono state salvate correttamente.");
+            mostraPopupMessaggio("Magazzino Aggiornato", "Modifiche effettuate.");
+        }
+        else {
+            console.log("Errore dal server: " + esito.messaggio);
         }
     } catch (err) {
         console.error("Errore di rete:", err);

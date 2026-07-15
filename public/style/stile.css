@@ -7,6 +7,8 @@ body{
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
+    width: 100%;
 }
 .navbar{
     display: flex;
@@ -159,7 +161,7 @@ p.titolo_footer{
     }
 }
 #hero{
-    background-image: url(../img/entrata.png);
+    background-image: url(../img/entrata.webp);
     background-size: cover;
     background-position: center 65%;
     background-repeat: no-repeat;
@@ -244,6 +246,7 @@ p.titolo_footer{
     border-bottom: 2px solid #306D29;
     position: relative; 
     overflow: hidden;
+    min-height: 300px;
 }
 .img_pianta img {
     width: 100%;
@@ -450,31 +453,46 @@ p.titolo_footer{
 }
 
 .storia_img {
-    border-radius: 10px;
+    border-radius: 20px; 
     overflow: hidden;
     background-color: #e7e1b1;
     text-align: center;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04);
 }
 
 .storia_img img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    min-height: 300px;
+    max-height: 600px;
     display: block;
 }
 
 .storia_testo {
-    border: 2px solid #306D29;
-    border-radius: 10px;
-    padding: 30px;
+    border: none; 
+    border-radius: 20px;
+    padding: 40px; 
     background-color: #ffffff;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
 }
 
 .storia_testo p {
     color: #000000;
     line-height: 1.5;
     font-size: 1.1em;
+    margin-bottom: 18px;
+}
+.storia_testo p:first-child {
+    font-size: 1.2em;
+    color: #0D530E; 
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+.storia_testo p:last-child {
+    margin-bottom: 0; 
 }
 
 #sezione_galleria_chisiamo {
@@ -523,14 +541,14 @@ p.titolo_footer{
     transform: scale(1.05);
 }
 
-/* Colonna sinistra: (310px * 2) + 20px gap = 640px totali */
+/* Colonna sinistra: (510px * 2) + 20px gap = 1162px totali */
 .galleria_item {
-    height: 310px; 
+    height: 571px; 
 }
 
-/* Colonna destra: 3 righe da 200px + (20px gap * 2) = 640px totali */
-.galleria_colonna_destra .galleria_item { /*tutti galleria item che si trovano dentro galleria colonna destra*/
-    height: 200px; 
+/* Colonna destra: 3 righe da 374px + (20px gap * 2) = 1162px totali */
+.galleria_colonna_destra .galleria_item { 
+    height: 374px; 
 }
 
 .galleria_colonna_destra .galleria_item:nth-child(3) {
@@ -548,9 +566,6 @@ p.titolo_footer{
 
     .storia_contenitore {
         grid-template-columns: 1fr;
-    }
-    .storia_img {
-        border: 2px solid #306D29;
     }
 
     .galleria_layout {
@@ -678,9 +693,19 @@ p.titolo_footer{
 }
 #griglia_catalogo {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: repeat(4, 1fr); 
     gap: 30px; 
     margin-top: 20px;
+}
+@media (max-width: 1360px) {
+    #griglia_catalogo{
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+@media (max-width: 1000px) {
+    #griglia_catalogo{
+        grid-template-columns: repeat(2, 1fr); 
+    }
 }
 
 /* pagina catalogo*/
@@ -862,6 +887,7 @@ p.titolo_footer{
     border: 2px solid #306D29;
     border-top: none;
     border-radius: 0 0 8px 8px;
+    margin-bottom: 30px;
 }
 
 .riga {
@@ -1347,6 +1373,7 @@ p.titolo_footer{
     border-radius: 20px;
     display: block; 
     height: auto;
+    max-height: 500px;
 }
 .intestazione_gestione .parte_destra{
     width: 50%;
@@ -1678,4 +1705,21 @@ p.titolo_footer{
 #messaggio_errore{
     color:#306D29;
     font-size: 0.8em;
+}
+@media (max-width: 768px) {
+
+    .sezione_grafici {
+        width: 100%;
+        padding: 10px; 
+        margin: 10px 0;
+        gap: 20px;
+        box-sizing: border-box;
+    }
+    #grafico_torta, #grafico_barre {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 5px; 
+        box-sizing: border-box;
+        overflow: hidden;
+    }
 }
