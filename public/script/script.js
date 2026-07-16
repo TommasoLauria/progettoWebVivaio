@@ -36,6 +36,22 @@ window.onload=function(){
         const idPianta = parametriUrl.get("id");
         caricaAnteprima(idPianta); 
     }
+    const formContatti = document.getElementById("form_contatti");
+
+    if (formContatti) {
+        formContatti.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const nome = document.getElementById("nome").value;
+            const email = document.getElementById("email").value;
+
+            const messaggio = document.getElementById("messaggio_contatti");
+            messaggio.textContent = `${nome}, messaggio inviato correttamente. Ti contatteremo all'email ${email}.`;
+
+            formContatti.reset();
+            setTimeout(() => { messaggio.textContent = ""; }, 5000);
+        });
+    }
 };
 
 let piante = [];
