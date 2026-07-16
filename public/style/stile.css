@@ -188,7 +188,7 @@ p.titolo_footer{
     color: #0D530E;
     margin: 0 0 35px 0; 
 }
-#bottone_catalogo {
+.bottone_catalogo {
     display: inline-block;
     padding: 12px 35px;
     border: 2px solid #0D530E;
@@ -199,7 +199,7 @@ p.titolo_footer{
     font-size: 1.1em;
 }
 
-#bottone_catalogo:hover {
+.bottone_catalogo:hover {
     background-color: #0D530E; 
     color: #FBF5DD;
 }
@@ -444,6 +444,7 @@ p.titolo_footer{
 
 #sezione_storia {
     padding: 40px;
+    margin: 0 50px;
 }
 
 .storia_contenitore {
@@ -464,7 +465,7 @@ p.titolo_footer{
     width: 100%;
     height: 100%;
     object-fit: cover;
-    max-height: 600px;
+    max-height: 800px;
     display: block;
 }
 
@@ -562,6 +563,7 @@ p.titolo_footer{
     
     #sezione_storia, #sezione_galleria_chisiamo {
         padding: 20px;
+        margin:0;
     }
 
     .storia_contenitore {
@@ -761,6 +763,9 @@ p.titolo_footer{
     text-align: right;
 }
 @media (max-width: 768px) {
+    #sezione_catalogo{
+        width: 80%;
+    }
     #griglia_catalogo {
         grid-template-columns: 1fr;
         gap: 20px;

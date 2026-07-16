@@ -210,17 +210,13 @@ database: "vivaio"
 
 ## Installazione e avvio
 
-1. Clonare o scaricare il progetto.
-
-2. Aprire il terminale nella cartella del progetto.
-
-3. Installare le dipendenze:
+1. Installare le dipendenze:
 
 ```bash
 npm install
 ```
 
-4. Importare il database MySQL:
+2. Importare il database MySQL:
 
 ```bash
 mysql -u root < database.sql
@@ -247,13 +243,13 @@ Infine rieseguire:
 mysql -u root < database.sql
 ```
 
-5. Avviare il server:
+3. Avviare il server:
 
 ```bash
 npm run dev
 ```
 
-6. Aprire il sito nel browser:
+4. Aprire il sito nel browser:
 
 ```text
 http://localhost:3000
@@ -330,13 +326,3 @@ In questa pagina lo staff puo':
 ### Logout
 
 Per uscire dall'area staff usare il comando `Esci` nel menu utente. Il server elimina il cookie di autenticazione e riporta alla pagina di login.
-
-## Anteprime dal documento di progetto
-
-Le immagini estratte dalla proposta sono disponibili nella cartella `readme-assets/pdf-images`.
-
-![Anteprima progetto 1](readme-assets/pdf-images/proposta-000.png)
-
-![Anteprima progetto 2](readme-assets/pdf-images/proposta-001.png)
-
-![Anteprima progetto 3](readme-assets/pdf-images/proposta-002.png)

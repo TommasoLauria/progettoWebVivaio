@@ -3,7 +3,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const mysql = require("mysql2");
 const jwt = require("jsonwebtoken"); 
-const JWT_SECRET = "chiave_segreta"; 
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 
 const app = express();
@@ -43,7 +43,7 @@ function authenticateToken(req, res, next) {
     }
     
     try {
-        const payload = jwt.verify(token, JWT_SECRET);
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
         req.user = payload; 
         next(); 
     } catch (err) {
@@ -134,7 +134,7 @@ app.post('/login', async (req, res) => {
             userName: user.nome 
         };
         
-        const token = jwt.sign(payload, JWT_SECRET, { algorithm: "HS256", expiresIn: "1h" });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { algorithm: "HS256", expiresIn: "1h" });
         
         res.cookie("token", token,{
             httpOnly: true, 
@@ -162,7 +162,7 @@ app.get('/dashboard', authenticateToken, (req, res) => {
 });
 
 app.get('/gestione-pianta', authenticateToken, (req, res) => {
-    console.log("l'utente che è entrata in gestione-pianta è: ", req.user.userName)
+    console.log("l'utente che è entrato in gestione-pianta è: ", req.user.userName)
     res.sendFile(__dirname + '/private/gestionePianta.html');
 });
 
@@ -173,6 +173,9 @@ app.get('/anteprima-pianta', (req, res) => {
     } else {
         res.sendFile(__dirname + '/public/anteprimaPianta.html');
     }
+});
+app.use((req, res) => {
+    res.status(404).sendFile(path.join(__dirname, "public/404.html"));
 });
 
 app.listen(port, () => {
