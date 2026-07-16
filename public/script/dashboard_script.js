@@ -284,7 +284,7 @@ google.charts.setOnLoadCallback(() => {
 });
 
 function avviaCalcoliGrafici() {
-    const worker = new Worker("./script/statistiche_worke.js");
+    const worker = new Worker("./script/statistiche_worker.js");
     worker.postMessage(pianteDashboard);//invio le piante al worker
     worker.onmessage = (event) => {//aspetta che il worker manda done
         if (event.data.type === "done") {
