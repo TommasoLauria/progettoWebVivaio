@@ -1728,12 +1728,6 @@ p.titolo_footer{
         overflow: hidden;
     }
 }
-#messaggio_contatti {
-    margin-top: 15px;
-    color: #0D530E;
-    font-weight: bold;
-    font-size: 1em;
-}
 #messaggio_contatti:empty {
     display: none;
 }

@@ -8,7 +8,6 @@ const bcrypt = require("bcrypt");
 
 const app = express();
 const port = 3000;
-
 const pool = mysql.createPool({
     host:"localhost",
     user:"root",
@@ -35,6 +34,7 @@ app.get('/login', (req, res) => {
     }
 });
 app.use(express.static("public", { extensions: ["html"] }));
+
 function authenticateToken(req, res, next) {
     const token = req.cookies.token; 
     
@@ -111,7 +111,7 @@ app.delete('/api/piante',authenticateToken, async (req, res) => {
 app.post('/login', async (req, res) => {
 
     const username = req.body.username; 
-    const password = req.body.password; 
+    const password = req.body.password;
     
     try {
         const query = "SELECT id, nome, password_hash FROM utenti WHERE email = ?";
@@ -155,7 +155,7 @@ app.get('/logout', (req, res) => {
     res.redirect(302, '/login');   
 });
 
-app.get('/dashboard', authenticateToken, (req, res) => {
+app.get('/dashboard', authenticateToken, async (req, res) => {
     console.log("l'utente che è entrato in dashboard è:", req.user.userName)
     res.sendFile(__dirname + '/private/dashboard.html');
 

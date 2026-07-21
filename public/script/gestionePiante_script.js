@@ -75,18 +75,26 @@ function impostaEventi() {
         }
 
         //  se checked è scarico (-), altrimenti è carico (+)
+        const quantitaRapida = document.getElementById("quantita_rapida")
         const isScarico = toggleOperazione.checked;
         let quantitaCalcolata;
 
         if (isScarico) {
+            if(piantaCorrente.quantita<quantitaDigitata){
+                alert("attenzione non hai abbastanza piante");
+                quantitaRapida="";
+                return;
+            }
             quantitaCalcolata = Number(piantaCorrente.quantita) - quantitaDigitata;
             if (quantitaCalcolata < 0){
                 quantitaCalcolata = 0; 
             }
         } else {
             quantitaCalcolata = Number(piantaCorrente.quantita) + quantitaDigitata;
+            
         }
         salvaModificheServer(quantitaCalcolata);
+        quantitaRapida.value="";
     });
 }
 
